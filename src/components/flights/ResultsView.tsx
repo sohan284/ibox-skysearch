@@ -114,7 +114,7 @@ export function ResultsView({
             </div>
 
             <div className="space-y-3">
-              <Label>Price: ${filters.minPrice} - ${filters.maxPrice}</Label>
+              <Label>Price: ৳{filters.minPrice.toLocaleString()} - ৳{filters.maxPrice.toLocaleString()}</Label>
               <div className="flex gap-2">
                 <Input
                   type="number"

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { MOCK_FLIGHTS } from "@/lib/mock-data";
 import { filterFlights, sortFlights, getUniqueAirlines } from "@/lib/utils";
 import type { Flight, Filters, SortOption, BookingDetails } from "@/lib/types";
@@ -25,7 +25,7 @@ export function FlightsClient() {
     airlines: [],
     stops: [],
     minPrice: 0,
-    maxPrice: 1000,
+    maxPrice: 0, // Will be updated once we calculate maxPrice
   });
   const [sort, setSort] = useState<SortOption>("price-asc");
   const [selectedFlight, setSelectedFlight] = useState<Flight | null>(null);
@@ -33,15 +33,46 @@ export function FlightsClient() {
     null,
   );
 
-  const airlines = useMemo(() => getUniqueAirlines(MOCK_FLIGHTS), []);
-  const maxPrice = useMemo(
-    () => Math.max(...MOCK_FLIGHTS.map((f) => f.price)),
-    [],
-  );
+  // First, filter by search params (origin, destination, date)
+  const searchFilteredFlights = useMemo(() => {
+    return MOCK_FLIGHTS.filter((flight) => {
+      if (origin && flight.origin !== origin) return false;
+      if (destination && flight.destination !== destination) return false;
+      if (date && flight.date !== date) return false;
+      return true;
+    });
+  }, [origin, destination, date]);
 
+  const airlines = useMemo(
+    () => getUniqueAirlines(searchFilteredFlights),
+    [searchFilteredFlights],
+  );
+  const maxPrice = useMemo(() => {
+    if (searchFilteredFlights.length === 0) return 0;
+    return Math.max(...searchFilteredFlights.map((f) => f.price));
+  }, [searchFilteredFlights]);
+
+  // Update filters when maxPrice changes
+  useEffect(() => {
+    if (maxPrice > 0) {
+      setFilters((prev) => ({
+        ...prev,
+        maxPrice: prev.maxPrice === 0 ? maxPrice : prev.maxPrice,
+      }));
+    }
+  }, [maxPrice]);
+
+  // Apply additional filters (airline, stops, price range)
   const filteredFlights = useMemo(() => {
-    return sortFlights(filterFlights(MOCK_FLIGHTS, filters), sort);
-  }, [filters, sort]);
+    return sortFlights(
+      filterFlights(searchFilteredFlights, {
+        ...filters,
+        // If maxPrice wasn't set (0), use the max price from search results
+        maxPrice: filters.maxPrice === 1000 ? maxPrice : filters.maxPrice,
+      }),
+      sort,
+    );
+  }, [filters, sort, searchFilteredFlights, maxPrice]);
 
   const handleSelectFlight = (flight: Flight) => {
     setSelectedFlight(flight);

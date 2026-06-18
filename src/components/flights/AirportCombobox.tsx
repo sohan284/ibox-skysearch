@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import { Check, ChevronsUpDown, PlaneTakeoff, PlaneLanding } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,7 @@ interface AirportComboboxProps {
   onChange: (value: string) => void;
   placeholder?: string;
   label: string;
+  type?: "departure" | "arrival";
 }
 
 export function AirportCombobox({
@@ -31,6 +32,7 @@ export function AirportCombobox({
   onChange,
   placeholder = "Select airport...",
   label,
+  type = "departure",
 }: AirportComboboxProps) {
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
@@ -54,25 +56,31 @@ export function AirportCombobox({
     );
   }, [search]);
 
+  const Icon = type === "departure" ? PlaneTakeoff : PlaneLanding;
+
   return (
     <div className="space-y-2">
-      <label className="text-sm font-medium text-gray-700">{label}</label>
+      <div className="flex items-center gap-2">
+        <Icon className="h-4 w-4 text-[#007eff]" />
+        <label className="text-sm font-medium text-black">{label}</label>
+      </div>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between"
+            className="w-full justify-between border-2 border-gray-200 hover:border-[#007eff] hover:text-[#007eff] transition-all duration-300"
           >
             {selectedAirport ? (
-              <span>
-                {selectedAirport.code} - {selectedAirport.city}
-              </span>
+              <div className="flex flex-col items-start text-left">
+                <span className="font-semibold text-black">{selectedAirport.code} - {selectedAirport.city}</span>
+                <span className="text-xs text-muted-foreground">{selectedAirport.name}</span>
+              </div>
             ) : (
               <span className="text-muted-foreground">{placeholder}</span>
             )}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            <ChevronsUpDown className="ml-2 h-5 w-5 shrink-0 text-[#007eff]" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0" align="start">
@@ -81,9 +89,10 @@ export function AirportCombobox({
               placeholder="Search airport..."
               value={search}
               onValueChange={setSearch}
+              className="border-b-2 border-gray-100"
             />
             <CommandEmpty>No airport found.</CommandEmpty>
-            <CommandGroup>
+            <CommandGroup className="max-h-64 overflow-y-auto">
               {filteredAirports.map((airport) => (
                 <CommandItem
                   key={airport.code}
@@ -93,18 +102,17 @@ export function AirportCombobox({
                     setOpen(false);
                     setSearch("");
                   }}
+                  className="hover:bg-[#007eff]/10 hover:text-[#007eff] transition-all duration-200"
                 >
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      value === airport.code ? "opacity-100" : "opacity-0"
+                      value === airport.code ? "opacity-100 text-[#007eff]" : "opacity-0"
                     )}
                   />
                   <div className="flex flex-col">
-                    <span className="font-medium">{airport.code}</span>
-                    <span className="text-sm text-muted-foreground">
-                      {airport.name}
-                    </span>
+                    <span className="font-medium text-black">{airport.code} - {airport.city}</span>
+                    <span className="text-xs text-muted-foreground">{airport.name}</span>
                   </div>
                 </CommandItem>
               ))}

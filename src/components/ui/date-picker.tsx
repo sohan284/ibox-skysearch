@@ -20,6 +20,29 @@ interface DatePickerProps {
 }
 
 export function DatePicker({ date, onSelect, placeholder }: DatePickerProps) {
+  const today = new Date();
+  const maxDate = new Date(today);
+  maxDate.setDate(today.getDate() + 4); // 5 days total (today +4)
+
+  const disabledDates = (date: Date) => {
+    const startOfDay = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+    );
+    const startOfToday = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+    );
+    const endOfMaxDate = new Date(
+      maxDate.getFullYear(),
+      maxDate.getMonth(),
+      maxDate.getDate(),
+    );
+    return startOfDay < startOfToday || startOfDay > endOfMaxDate;
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -43,7 +66,9 @@ export function DatePicker({ date, onSelect, placeholder }: DatePickerProps) {
           mode="single"
           selected={date}
           onSelect={onSelect}
+          disabled={disabledDates}
           initialFocus
+          defaultMonth={today}
         />
       </PopoverContent>
     </Popover>

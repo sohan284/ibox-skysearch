@@ -10,6 +10,7 @@ export interface Flight {
   stops: number;
   price: number;
   currency: string;
+  date: string; // YYYY-MM-DD
 }
 
 export interface SearchParams {
@@ -33,4 +34,8 @@ export interface BookingDetails {
   phone: string;
 }
 
-export type SortOption = 'price-asc' | 'price-desc' | 'duration-asc' | 'departure-asc';
+export type SortOption =
+  | "price-asc"
+  | "price-desc"
+  | "duration-asc"
+  | "departure-asc";
