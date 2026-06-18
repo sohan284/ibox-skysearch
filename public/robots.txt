@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ibox-skysearch.com/sitemap.xml

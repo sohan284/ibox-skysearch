@@ -1,0 +1,16 @@
+{
+  "name": "iBox SkySearch",
+  "short_name": "SkySearch",
+  "description": "Find and book cheap flights",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/globe.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

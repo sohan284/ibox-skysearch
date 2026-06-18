@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# iBox SkySearch - Flight Search Aggregator
+
+A modern, responsive flight search and booking application built with Next.js, TypeScript, and Tailwind CSS.
+
+## Features
+
+### Flight Search
+- Search flights by origin, destination, date, and number of passengers
+- Clean, intuitive search form with validation
+
+### Results View
+- Display search results in a clear, readable format
+- Sort by:
+  - Price: Low to High
+  - Price: High to Low
+  - Duration: Shortest
+  - Departure: Earliest
+- Filter by:
+  - Airline
+  - Number of stops (Non-stop, 1 Stop, 2+ Stops)
+  - Price range
+
+### Booking Flow
+- Select a flight from search results
+- Complete booking form with passenger details (name, email, phone)
+- Receive booking confirmation with unique reference number
+
+### User Experience
+- Responsive design that works on mobile, tablet, and desktop
+- Loading states for better UX
+- Empty state when no flights match filters
+- Accessible with semantic HTML and keyboard navigation
+
+## Tech Stack
+
+- **Next.js 16** - React framework
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Utility-first CSS framework
+- **React Hooks** - useState, useMemo for state management
 
 ## Getting Started
 
-First, run the development server:
+### Installation
+
+```bash
+npm install
+```
+
+### Development
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+```
 
-## Learn More
+### Start Production Server
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/
+│   ├── page.tsx          # Main application page (all components)
+│   ├── layout.tsx        # Root layout
+│   └── globals.css       # Global styles
+├── lib/
+│   ├── types.ts          # TypeScript type definitions
+│   ├── mock-data.ts      # Mock flight data (31 flights)
+│   └── utils.ts          # Utility functions (filter, sort, format)
+└── components/           # (Can be split into separate files for scalability)
+```
 
-## Deploy on Vercel
+## State Management
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The application uses React's built-in hooks:
+- `useState` - For managing application state (search params, filters, selected flight, etc.)
+- `useMemo` - For memoizing computed values (filtered/sorted flights, unique airlines)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Future Improvements
+
+- Add real API integration (replace mock data)
+- Implement round-trip search
+- Add more filters (time of day, departure/arrival airports)
+- Persist booking data
+- Add user authentication
+- Implement seat selection
+- Add payment integration
