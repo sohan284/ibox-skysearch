@@ -56,7 +56,7 @@ export function ResultsView() {
     return sortFlights(
       filterFlights(searchFilteredFlights, {
         ...filters,
-        maxPrice: filters.maxPrice === 1000 ? maxPrice : filters.maxPrice,
+        maxPrice: filters.maxPrice === 0 || filters.maxPrice === 1000000 ? maxPrice : filters.maxPrice,
       }),
       sort,
     );

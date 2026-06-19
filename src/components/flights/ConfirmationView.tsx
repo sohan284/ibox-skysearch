@@ -1,18 +1,20 @@
-'use client';
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useFlightSearchStore } from "@/store/flightSearchStore";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useEffect } from "react";
 
 export function ConfirmationView() {
   const router = useRouter();
-  const {
-    selectedFlight,
-    bookingDetails,
-    resetAll
-  } = useFlightSearchStore();
-  
+  const { selectedFlight, bookingDetails, resetAll } = useFlightSearchStore();
+
+  useEffect(() => {
+    toast.success("Booking confirmed successfully!");
+  }, []);
+
   if (!selectedFlight || !bookingDetails) return null;
 
   return (
@@ -49,8 +51,8 @@ export function ConfirmationView() {
                   {selectedFlight.airline} {selectedFlight.flightNumber}
                 </div>
                 <div className="text-muted-foreground">
-                  {selectedFlight.departureTime} {selectedFlight.origin} → {selectedFlight.arrivalTime}{" "}
-                  {selectedFlight.destination}
+                  {selectedFlight.departureTime} {selectedFlight.origin} →{" "}
+                  {selectedFlight.arrivalTime} {selectedFlight.destination}
                 </div>
               </div>
             </div>

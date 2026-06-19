@@ -57,7 +57,7 @@ const getDefaultState = (): Omit<
       airlines: [],
       stops: [],
       minPrice: 0,
-      maxPrice: 0,
+      maxPrice: 1000000, // High enough default to not filter anything
     },
     sort: "price-asc",
     selectedFlight: null,

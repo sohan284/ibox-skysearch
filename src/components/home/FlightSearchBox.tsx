@@ -1,9 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { IoAirplaneOutline, IoAirplane } from "react-icons/io5";
-import { RiPlaneFill } from "react-icons/ri";
-import SharedRadioGroup from "@/components/shared/SharedRadioGroup";
 import AirportSearch from "./AirportSearch";
 import DateCalender from "./DateCalender";
 import SharedSelect from "@/components/shared/SharedSelect";
@@ -11,6 +8,7 @@ import { BANGLADESH_AIRPORTS, type Airport } from "@/lib/airports";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { useFlightSearchStore } from "@/store/flightSearchStore";
+import { toast } from "sonner";
 
 interface FlightSearchBoxProps {
   isModify?: boolean;
@@ -20,21 +18,12 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
   isModify = false,
 }) => {
   const router = useRouter();
-  
-  // Get store
-  const {
-    setOrigin,
-    setDestination,
-    setDate,
-    setPassengers,
-    resetAll,
-  } = useFlightSearchStore();
 
-  const [adult, setAdult] = useState(1);
-  const [child, setChild] = useState(0);
-  const [infant, setInfant] = useState(0);
-  const [flightClass, setFlightClass] = useState("Economy");
-  const [selectedFlight, setSelectedFlight] = useState("roundWay");
+  // Get store
+  const { setOrigin, setDestination, setDate, setPassengers, resetAll } =
+    useFlightSearchStore();
+
+  const [passengers, setPassengersCount] = useState(1);
   const [fromAirport, setFromAirport] = useState<Airport | null>(
     BANGLADESH_AIRPORTS.find((airport) => airport.code === "DAC") || null,
   );
@@ -42,8 +31,6 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
     BANGLADESH_AIRPORTS.find((airport) => airport.code === "CXB") || null,
   );
   const [departureDate, setDepartureDate] = useState<Date | null>(null);
-  const [returnDate, setReturnDate] = useState<Date | null>(null);
-  const [isZoomedIn, setIsZoomedIn] = useState(true);
 
   // Sync local state with store on mount if isModify is true
   useEffect(() => {
@@ -52,196 +39,71 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
     }
   }, [isModify]);
 
-  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsZoomedIn(false);
-    setTimeout(() => {
-      setSelectedFlight(event.target.value);
-      setTimeout(() => {
-        setIsZoomedIn(true);
-      }, 50);
-    }, 300);
-  };
-
   const handleSearchFlight = () => {
     // Validate
     if (fromAirport && toAirport && fromAirport.code === toAirport.code) {
-      alert("Origin and destination airports cannot be the same!");
+      toast.warning("Origin and destination airports cannot be the same!");
       return;
     }
     if (!departureDate) {
-      alert("Please select a departure date!");
+      toast.warning("Please select a departure date!");
       return;
     }
 
-    const totalPassengers = adult + child + infant;
-    const formattedDate = departureDate ? format(departureDate, "yyyy-MM-dd") : "";
-    
+    const formattedDate = departureDate
+      ? format(departureDate, "yyyy-MM-dd")
+      : "";
+
     // Update store
     setOrigin(fromAirport?.code || "");
     setDestination(toAirport?.code || "");
     setDate(formattedDate);
-    setPassengers(totalPassengers);
-    
+    setPassengers(passengers);
+
     const params = new URLSearchParams({
       origin: fromAirport?.code || "",
       destination: toAirport?.code || "",
       date: formattedDate,
-      passengers: totalPassengers.toString(),
+      passengers: passengers.toString(),
     });
-    
+
     router.push(`/flights?${params.toString()}`);
   };
 
-  const radioOptions = [
-    { value: "roundWay", label: "ROUND-WAY" },
-    { value: "oneWay", label: "ONE-WAY" },
-    { value: "multiCity", label: "MULTI-CITY" },
-  ];
-
   return (
     <div>
-      <div className="relative max-w-[1200px] mx-auto grid lg:grid-cols-3">
-        <div className="lg:col-span-2 gap-4 bg-white rounded-xl p-5 border-dotted border-gray-300 border-b-2 lg:border-b-0 lg:border-r-2">
-          <SharedRadioGroup
-            value={selectedFlight}
-            onChange={handleRadioChange}
-            options={radioOptions}
-          />
-
-          <div className="mt-4">
-            {selectedFlight === "roundWay" && (
-              <div
-                className={`grid grid-cols-7 gap-4 transition-all duration-300 ease-in-out ${
-                  isZoomedIn
-                    ? "transform scale-100 opacity-100"
-                    : "transform scale-90 opacity-0"
-                }`}
-              >
-                <div className="lg:col-span-3 col-span-7">
-                  <AirportSearch
-                    label="FROM"
-                    value={fromAirport}
-                    onChange={setFromAirport}
-                  />
-                  <div className="mt-3">
-                    <DateCalender
-                      selectedDate={departureDate}
-                      setSelectedDate={setDepartureDate}
-                    />
-                  </div>
-                </div>
-                <div className="text-primary relative hidden lg:block col-span-1">
-                  <div>
-                    <IoAirplane size={70} />
-                  </div>
-                  <div className="rotate-180 absolute top-10 left-2">
-                    <IoAirplaneOutline size={70} />
-                  </div>
-                </div>
-                <div className="lg:col-span-3 col-span-7">
-                  <AirportSearch
-                    label="TO"
-                    value={toAirport}
-                    onChange={setToAirport}
-                  />
-                  <div className="mt-3">
-                    <DateCalender
-                      selectedDate={returnDate}
-                      setSelectedDate={setReturnDate}
-                      minDate={departureDate}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {selectedFlight === "oneWay" && (
-              <div
-                className={`grid grid-cols-7 gap-4 transition-all duration-300 ease-in-out ${
-                  isZoomedIn
-                    ? "transform scale-100 opacity-100"
-                    : "transform scale-90 opacity-0"
-                }`}
-              >
-                <div className="lg:col-span-3 col-span-7">
-                  <AirportSearch
-                    label="FROM"
-                    value={fromAirport}
-                    onChange={setFromAirport}
-                  />
-                  <div className="mt-3">
-                    <DateCalender
-                      selectedDate={departureDate}
-                      setSelectedDate={setDepartureDate}
-                    />
-                  </div>
-                </div>
-                <div className="text-primary relative hidden lg:block col-span-1">
-                  <div>
-                    <RiPlaneFill size={70} />
-                  </div>
-                </div>
-                <div className="lg:col-span-3 col-span-7">
-                  <AirportSearch
-                    label="TO"
-                    value={toAirport}
-                    onChange={setToAirport}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="flex flex-col justify-between gap-4 bg-white rounded-xl p-6 col-span-1">
-          <div>
-            <div className="grid grid-cols-3 gap-4">
-              <SharedSelect
-                label="ADULT"
-                options={[1, 2, 3, 4, 5]}
-                value={adult}
-                onChange={setAdult}
+      <div className="relative max-w-[1000px] mx-auto">
+        <div className="bg-primary/5 rounded-xl p-5 border-dotted border-gray-300">
+          <div className="space-y-3">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              <AirportSearch
+                label="ORIGIN"
+                value={fromAirport}
+                onChange={setFromAirport}
               />
-              <SharedSelect
-                label="CHILD"
-                options={[0, 1, 2, 3, 4]}
-                value={child}
-                onChange={setChild}
-              />
-              <SharedSelect
-                label="INFANT"
-                options={[0, 1, 2]}
-                value={infant}
-                onChange={setInfant}
+              <AirportSearch
+                label="DESTINATION"
+                value={toAirport}
+                onChange={setToAirport}
               />
             </div>
-            <div className="mt-4">
-              <select
-                value={flightClass}
-                onChange={(e) => setFlightClass(e.target.value)}
-                className="bg-[#d7e7f4] text-sm rounded-sm p-2 w-full text-gray-500"
-              >
-                {[
-                  "Economy",
-                  "Premium Economy",
-                  "Business",
-                  "Premium Business",
-                  "First Class",
-                  "Premium First Class",
-                ].map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </select>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+              <DateCalender
+                selectedDate={departureDate}
+                setSelectedDate={setDepartureDate}
+              />
+              <SharedSelect
+                label="PASSENGERS"
+                options={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                value={passengers}
+                onChange={setPassengersCount}
+              />
             </div>
           </div>
-
-          <div>
+          <div className="mt-6">
             <button
-              disabled={selectedFlight === "multiCity"}
               onClick={handleSearchFlight}
-              className="w-full bg-primary text-white font-bold py-2 text-sm rounded-sm cursor-pointer disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="w-full bg-primary text-white font-bold py-3 text-sm rounded-sm cursor-pointer"
             >
               SEARCH FOR FLIGHT
             </button>

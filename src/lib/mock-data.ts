@@ -1,9 +1,11 @@
 import type { Flight } from "./types";
+import { BANGLADESH_AIRPORTS } from "./airports";
 
-// Helper to get dates for the next 5 days
+// Helper to get dates for the next 5 days (including today)
 const getNext5Days = (): string[] => {
   const dates: string[] = [];
   const today = new Date();
+  today.setHours(0, 0, 0, 0); // Reset to midnight to avoid time issues
   for (let i = 0; i < 5; i++) {
     const date = new Date(today);
     date.setDate(today.getDate() + i);
@@ -21,17 +23,6 @@ const BD_AIRLINES = [
   "Air Astra",
 ];
 
-const ROUTES = [
-  { origin: "DAC", destination: "CGP" }, // Dhaka to Chittagong
-  { origin: "DAC", destination: "CXB" }, // Dhaka to Cox's Bazar
-  { origin: "DAC", destination: "ZYL" }, // Dhaka to Sylhet
-  { origin: "DAC", destination: "JSR" }, // Dhaka to Jessore
-  { origin: "DAC", destination: "MXR" }, // Dhaka to Rajshahi
-  { origin: "CGP", destination: "DAC" }, // Chittagong to Dhaka
-  { origin: "CXB", destination: "DAC" }, // Cox's Bazar to Dhaka
-  { origin: "ZYL", destination: "DAC" }, // Sylhet to Dhaka
-];
-
 const DEPARTURE_TIMES = [
   "07:00",
   "08:30",
@@ -44,11 +35,23 @@ const DEPARTURE_TIMES = [
   "19:00",
 ];
 
-const generateFlight = (id: number): Flight => {
-  const route = ROUTES[id % ROUTES.length];
-  const date = next5Days[id % next5Days.length];
-  const airline = BD_AIRLINES[id % BD_AIRLINES.length];
-  const departureTime = DEPARTURE_TIMES[id % DEPARTURE_TIMES.length];
+// Generate all possible routes (every origin to every other destination)
+const ROUTES: { origin: string; destination: string }[] = [];
+BANGLADESH_AIRPORTS.forEach((origin) => {
+  BANGLADESH_AIRPORTS.forEach((destination) => {
+    if (origin.code !== destination.code) {
+      ROUTES.push({ origin: origin.code, destination: destination.code });
+    }
+  });
+});
+
+const generateFlight = (
+  id: number,
+  route: { origin: string; destination: string },
+  date: string,
+  airline: string,
+  departureTime: string,
+): Flight => {
   const durationMinutes = 45 + Math.floor(Math.random() * 30); // 45-75 mins
   const stops = Math.random() > 0.8 ? 1 : 0; // 20% chance 1 stop
   const basePrice = 3000 + Math.floor(Math.random() * 5000); // 3000-8000 BDT
@@ -74,7 +77,24 @@ const generateFlight = (id: number): Flight => {
   };
 };
 
-// Generate 30+ flights
-export const MOCK_FLIGHTS: Flight[] = Array.from({ length: 35 }, (_, i) =>
-  generateFlight(i + 1),
-);
+// Generate flights: multiple airlines, multiple times, all routes, all 5 dates
+const allFlights: Flight[] = [];
+let flightId = 1;
+
+ROUTES.forEach((route) => {
+  next5Days.forEach((date) => {
+    BD_AIRLINES.forEach((airline) => {
+      // Generate 2-3 flights per airline per route per date
+      const numFlights = 2 + Math.floor(Math.random() * 2);
+      for (let i = 0; i < numFlights; i++) {
+        const departureTime =
+          DEPARTURE_TIMES[Math.floor(Math.random() * DEPARTURE_TIMES.length)];
+        allFlights.push(
+          generateFlight(flightId++, route, date, airline, departureTime),
+        );
+      }
+    });
+  });
+});
+
+export const MOCK_FLIGHTS: Flight[] = allFlights;

@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/shared/Navbar";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -53,7 +54,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col">
         <Navbar title="iBox SkySearch" />
-        {children}
+        <div className="mt-10">{children}</div> <Toaster />
       </body>
     </html>
   );

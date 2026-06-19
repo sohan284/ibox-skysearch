@@ -33,11 +33,7 @@ export default function DateCalender({
     compareToday.setHours(0, 0, 0, 0);
 
     const maxDate = new Date(compareToday);
-    if (minDate) {
-      maxDate.setDate(maxDate.getDate() + 15);
-    } else {
-      maxDate.setDate(maxDate.getDate() + 10);
-    }
+    maxDate.setDate(maxDate.getDate() + 4); // Only allow next 5 days (today + 4)
 
     if (minDate) {
       const compareMinDate = new Date(minDate);
