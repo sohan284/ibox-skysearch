@@ -63,6 +63,16 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
   };
 
   const handleSearchFlight = () => {
+    // Validate
+    if (fromAirport && toAirport && fromAirport.code === toAirport.code) {
+      alert("Origin and destination airports cannot be the same!");
+      return;
+    }
+    if (!departureDate) {
+      alert("Please select a departure date!");
+      return;
+    }
+
     const totalPassengers = adult + child + infant;
     const formattedDate = departureDate ? format(departureDate, "yyyy-MM-dd") : "";
     

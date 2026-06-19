@@ -63,63 +63,62 @@ export function ResultsView() {
   }, [filters, sort, searchFilteredFlights, maxPrice]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-      <div className="lg:col-span-1">
-        <FlightFilters airlines={airlines} maxPrice={maxPrice} />
-      </div>
-
-      <div className="lg:col-span-3 space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <Button
-            variant="ghost"
-            onClick={() => router.push("/")}
-            className="justify-start px-0 text-primary"
-          >
-            ← Back to Search
-          </Button>
-          <div className="flex items-center gap-3">
-            <Label className="mb-0">Sort by:</Label>
-            <Select
-              value={sort}
-              onValueChange={(value) => setSort(value as any)}
-            >
-              <SelectTrigger className="w-[200px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                <SelectItem value="duration-asc">Duration: Shortest</SelectItem>
-                <SelectItem value="departure-asc">
-                  Departure: Earliest
-                </SelectItem>
-              </SelectContent>
-            </Select>
+    <div className="max-w-6xl mx-auto px-4 py-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Left Filters Sticky */}
+        <div className="lg:col-span-1">
+          <div className="sticky top-[calc(50px+52px)]">
+            <FlightFilters airlines={airlines} maxPrice={maxPrice} />
           </div>
         </div>
 
-        {filteredFlights.length === 0 ? (
-          <Card>
-            <CardContent className="p-12 text-center">
-              <div className="text-gray-400 text-6xl mb-4">✈️</div>
-              <h3 className="text-xl font-semibold mb-2">No flights found</h3>
-              <p className="text-muted-foreground">
-                Try adjusting your filters to see more options.
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          filteredFlights.map((flight) => (
-            <FlightCard
-              key={flight.id}
-              flight={flight}
-              onSelect={() => {
-                setSelectedFlight(flight);
-                setStep("booking");
-              }}
-            />
-          ))
-        )}
+        {/* Right Flight Cards */}
+        <div className="lg:col-span-3 space-y-4">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <Label className="mb-0">Sort by:</Label>
+              <Select
+                value={sort}
+                onValueChange={(value) => setSort(value as any)}
+              >
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                  <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                  <SelectItem value="duration-asc">Duration: Shortest</SelectItem>
+                  <SelectItem value="departure-asc">
+                    Departure: Earliest
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {filteredFlights.length === 0 ? (
+            <Card>
+              <CardContent className="p-12 text-center">
+                <div className="text-gray-400 text-6xl mb-4">✈️</div>
+                <h3 className="text-xl font-semibold mb-2">No flights found</h3>
+                <p className="text-muted-foreground">
+                  Try adjusting your filters to see more options.
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            filteredFlights.map((flight) => (
+              <FlightCard
+                key={flight.id}
+                flight={flight}
+                onSelect={() => {
+                  setSelectedFlight(flight);
+                  setStep("booking");
+                }}
+              />
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
