@@ -13,12 +13,7 @@ export interface Flight {
   date: string; // YYYY-MM-DD
 }
 
-export interface SearchParams {
-  origin: string;
-  destination: string;
-  date: string;
-  passengers: number;
-}
+
 
 export interface Filters {
   airlines: string[];

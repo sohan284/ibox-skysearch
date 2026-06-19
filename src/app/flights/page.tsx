@@ -1,5 +1,5 @@
 import { Header } from "@/components/shared/Header";
-import { FlightsClient } from "@/components/flights/results/FlightsClient";
+import { FlightsClient } from "@/components/flights/FlightsClient";
 import { BANGLADESH_AIRPORTS } from "@/lib/airports";
 
 interface FlightsPageProps {

@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
@@ -8,8 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import type { Flight, BookingDetails } from '@/lib/types';
 import { formatDuration } from '@/lib/utils';
+import { useFlightSearchStore } from '@/store/flightSearchStore';
 
 const bookingFormSchema = z.object({
   passengerName: z.string().min(2, "Name must be at least 2 characters"),
@@ -17,14 +17,16 @@ const bookingFormSchema = z.object({
   phone: z.string().min(5, "Phone number must be at least 5 characters"),
 });
 
-interface BookingFormProps {
-  flight: Flight;
-  passengers: number;
-  onBook: (details: BookingDetails) => void;
-  onBack: () => void;
-}
+export function BookingForm() {
+  const {
+    selectedFlight,
+    passengers,
+    setBookingDetails,
+    setStep
+  } = useFlightSearchStore();
+  
+  if (!selectedFlight) return null;
 
-export function BookingForm({ flight, passengers, onBook, onBack }: BookingFormProps) {
   const form = useForm<z.infer<typeof bookingFormSchema>>({
     resolver: zodResolver(bookingFormSchema),
     defaultValues: {
@@ -34,15 +36,20 @@ export function BookingForm({ flight, passengers, onBook, onBack }: BookingFormP
     },
   });
 
-  const totalPrice = flight.price * passengers;
+  const totalPrice = selectedFlight.price * passengers;
 
   const handleSubmit = (values: z.infer<typeof bookingFormSchema>) => {
-    onBook({ ...values, flightId: flight.id });
+    setBookingDetails({ ...values, flightId: selectedFlight.id });
+    setStep("confirmation");
   };
 
   return (
     <div className="max-w-2xl mx-auto">
-      <Button variant="ghost" onClick={onBack} className="justify-start px-0 mb-6">
+      <Button 
+        variant="ghost" 
+        onClick={() => setStep("results")} 
+        className="justify-start px-0 mb-6"
+      >
         ← Back to Results
       </Button>
 
@@ -55,12 +62,12 @@ export function BookingForm({ flight, passengers, onBook, onBack }: BookingFormP
             <h3 className="font-semibold mb-3">Flight Summary</h3>
             <div className="flex justify-between items-center">
               <div>
-                <div className="font-bold">{flight.airline} {flight.flightNumber}</div>
+                <div className="font-bold">{selectedFlight.airline} {selectedFlight.flightNumber}</div>
                 <div className="text-sm text-muted-foreground">
-                  {flight.departureTime} {flight.origin} → {flight.arrivalTime} {flight.destination}
+                  {selectedFlight.departureTime} {selectedFlight.origin} → {selectedFlight.arrivalTime} {selectedFlight.destination}
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  {formatDuration(flight.durationMinutes)}, {flight.stops === 0 ? 'Non-stop' : `${flight.stops} stop${flight.stops > 1 ? 's' : ''}`}
+                  {formatDuration(selectedFlight.durationMinutes)}, {selectedFlight.stops === 0 ? 'Non-stop' : `${selectedFlight.stops} stop${selectedFlight.stops > 1 ? 's' : ''}`}
                 </div>
               </div>
               <div className="text-right">

@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoAirplaneOutline, IoAirplane } from "react-icons/io5";
+import { RiPlaneFill } from "react-icons/ri";
 import SharedRadioGroup from "@/components/shared/SharedRadioGroup";
 import AirportSearch from "./AirportSearch";
 import DateCalender from "./DateCalender";
@@ -9,6 +10,7 @@ import SharedSelect from "@/components/shared/SharedSelect";
 import { BANGLADESH_AIRPORTS, type Airport } from "@/lib/airports";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
+import { useFlightSearchStore } from "@/store/flightSearchStore";
 
 interface FlightSearchBoxProps {
   isModify?: boolean;
@@ -18,6 +20,16 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
   isModify = false,
 }) => {
   const router = useRouter();
+  
+  // Get store
+  const {
+    setOrigin,
+    setDestination,
+    setDate,
+    setPassengers,
+    resetAll,
+  } = useFlightSearchStore();
+
   const [adult, setAdult] = useState(1);
   const [child, setChild] = useState(0);
   const [infant, setInfant] = useState(0);
@@ -33,6 +45,13 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
   const [returnDate, setReturnDate] = useState<Date | null>(null);
   const [isZoomedIn, setIsZoomedIn] = useState(true);
 
+  // Sync local state with store on mount if isModify is true
+  useEffect(() => {
+    if (isModify) {
+      // Optional: implement logic to load from store
+    }
+  }, [isModify]);
+
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsZoomedIn(false);
     setTimeout(() => {
@@ -45,12 +64,21 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
 
   const handleSearchFlight = () => {
     const totalPassengers = adult + child + infant;
+    const formattedDate = departureDate ? format(departureDate, "yyyy-MM-dd") : "";
+    
+    // Update store
+    setOrigin(fromAirport?.code || "");
+    setDestination(toAirport?.code || "");
+    setDate(formattedDate);
+    setPassengers(totalPassengers);
+    
     const params = new URLSearchParams({
       origin: fromAirport?.code || "",
       destination: toAirport?.code || "",
-      date: departureDate ? format(departureDate, "yyyy-MM-dd") : "",
+      date: formattedDate,
       passengers: totalPassengers.toString(),
     });
+    
     router.push(`/flights?${params.toString()}`);
   };
 

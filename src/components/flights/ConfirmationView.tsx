@@ -1,18 +1,20 @@
+'use client';
+
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import type { Flight, BookingDetails } from "@/lib/types";
+import { Card, CardContent } from "@/components/ui/card";
+import { useFlightSearchStore } from "@/store/flightSearchStore";
+import { useRouter } from "next/navigation";
 
-interface ConfirmationViewProps {
-  flight: Flight;
-  bookingDetails: BookingDetails;
-  onNewSearch: () => void;
-}
+export function ConfirmationView() {
+  const router = useRouter();
+  const {
+    selectedFlight,
+    bookingDetails,
+    resetAll
+  } = useFlightSearchStore();
+  
+  if (!selectedFlight || !bookingDetails) return null;
 
-export function ConfirmationView({
-  flight,
-  bookingDetails,
-  onNewSearch,
-}: ConfirmationViewProps) {
   return (
     <div className="max-w-2xl mx-auto text-center">
       <Card className="shadow-xl">
@@ -44,18 +46,21 @@ export function ConfirmationView({
               </div>
               <div className="border-t pt-3 mt-3">
                 <div className="font-bold mb-2">
-                  {flight.airline} {flight.flightNumber}
+                  {selectedFlight.airline} {selectedFlight.flightNumber}
                 </div>
                 <div className="text-muted-foreground">
-                  {flight.departureTime} {flight.origin} → {flight.arrivalTime}{" "}
-                  {flight.destination}
+                  {selectedFlight.departureTime} {selectedFlight.origin} → {selectedFlight.arrivalTime}{" "}
+                  {selectedFlight.destination}
                 </div>
               </div>
             </div>
           </div>
 
           <Button
-            onClick={onNewSearch}
+            onClick={() => {
+              resetAll();
+              router.push("/");
+            }}
             className="bg-primary hover:bg-primary/90"
           >
             Search for Another Flight
