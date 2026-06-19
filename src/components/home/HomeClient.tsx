@@ -1,33 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useState, lazy, Suspense } from "react";
-const SearchForm = lazy(() => import("@/components/flights/SearchForm"));
+import FlightSearchBox from "@/components/flights/search/FlightSearchBox";
 
 export function HomeClient() {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleSearch = (searchParams: {
-    origin: string;
-    destination: string;
-    date: string;
-    passengers: number;
-  }) => {
-    setIsLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      const params = new URLSearchParams({
-        origin: searchParams.origin,
-        destination: searchParams.destination,
-        date: searchParams.date,
-        passengers: searchParams.passengers.toString(),
-      });
-      router.push(`/flights?${params.toString()}`);
-    }, 1000);
-  };
-
   const features = [
     {
       icon: (
@@ -96,35 +71,8 @@ export function HomeClient() {
   return (
     <>
       <main className="max-w-6xl mx-auto px-4 py-12">
-        <Suspense
-          fallback={
-            <div className="text-center py-12">Loading search form...</div>
-          }
-        >
-          <SearchForm onSearch={handleSearch} isLoading={isLoading} />
-        </Suspense>
+        <FlightSearchBox />
       </main>
-      <section className="py-16 px-4 bg-white">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12 text-black">
-            Why Choose iBox SkySearch?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="text-center p-6 bg-gradient-to-br from-white to-gray-50 rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300"
-              >
-                <div className="mb-4 flex justify-center">{feature.icon}</div>
-                <h3 className="text-xl font-bold mb-2 text-black">
-                  {feature.title}
-                </h3>
-                <p className="text-muted-foreground">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
     </>
   );
 }

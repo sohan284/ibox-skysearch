@@ -33,9 +33,7 @@ const formSchema = z.object({
   destination: z.string().min(2, {
     message: "Please select an arrival airport.",
   }),
-  date: z.date({
-    required_error: "A date is required.",
-  }),
+  date: z.date(),
   passengers: z.string().min(1, {
     message: "Passengers is required.",
   }),

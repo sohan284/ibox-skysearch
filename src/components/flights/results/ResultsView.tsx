@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import type { Flight, Filters, SortOption } from '@/lib/types';
-import { FlightCard } from './FlightCard';
+} from "@/components/ui/select";
+import type { Flight, Filters, SortOption } from "@/lib/types";
+import { FlightCard } from "./FlightCard";
 
 interface ResultsViewProps {
   flights: Flight[];
@@ -47,8 +47,10 @@ export function ResultsView({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setFilters({ airlines: [], stops: [], minPrice: 0, maxPrice })}
-                className="text-blue-600 hover:text-blue-700"
+                onClick={() =>
+                  setFilters({ airlines: [], stops: [], minPrice: 0, maxPrice })
+                }
+                className="text-primary hover:text-primary/90"
               >
                 Reset
               </Button>
@@ -75,7 +77,7 @@ export function ResultsView({
                             : prev.airlines.filter((a) => a !== airline),
                         }));
                       }}
-                      className="rounded border-gray-300"
+                      className="rounded border-gray-300 text-primary focus:ring-primary"
                     />
                     <span className="text-sm">{airline}</span>
                   </label>
@@ -103,10 +105,14 @@ export function ResultsView({
                             : prev.stops.filter((s) => s !== stop),
                         }));
                       }}
-                      className="rounded border-gray-300"
+                      className="rounded border-gray-300 text-primary focus:ring-primary"
                     />
                     <span className="text-sm">
-                      {stop === 0 ? 'Non-stop' : stop === 1 ? '1 Stop' : '2+ Stops'}
+                      {stop === 0
+                        ? "Non-stop"
+                        : stop === 1
+                          ? "1 Stop"
+                          : "2+ Stops"}
                     </span>
                   </label>
                 ))}
@@ -114,7 +120,10 @@ export function ResultsView({
             </div>
 
             <div className="space-y-3">
-              <Label>Price: ৳{filters.minPrice.toLocaleString()} - ৳{filters.maxPrice.toLocaleString()}</Label>
+              <Label>
+                Price: ৳{filters.minPrice.toLocaleString()} - ৳
+                {filters.maxPrice.toLocaleString()}
+              </Label>
               <div className="flex gap-2">
                 <Input
                   type="number"
@@ -122,7 +131,10 @@ export function ResultsView({
                   max={maxPrice}
                   value={filters.minPrice}
                   onChange={(e) =>
-                    setFilters((prev) => ({ ...prev, minPrice: Number(e.target.value) }))
+                    setFilters((prev) => ({
+                      ...prev,
+                      minPrice: Number(e.target.value),
+                    }))
                   }
                 />
                 <Input
@@ -131,7 +143,10 @@ export function ResultsView({
                   max={maxPrice}
                   value={filters.maxPrice}
                   onChange={(e) =>
-                    setFilters((prev) => ({ ...prev, maxPrice: Number(e.target.value) }))
+                    setFilters((prev) => ({
+                      ...prev,
+                      maxPrice: Number(e.target.value),
+                    }))
                   }
                 />
               </div>
@@ -142,12 +157,19 @@ export function ResultsView({
 
       <div className="lg:col-span-3 space-y-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <Button variant="ghost" onClick={onBack} className="justify-start px-0">
+          <Button
+            variant="ghost"
+            onClick={onBack}
+            className="justify-start px-0 text-primary"
+          >
             ← Back to Search
           </Button>
           <div className="flex items-center gap-3">
             <Label className="mb-0">Sort by:</Label>
-            <Select value={sort} onValueChange={(value) => setSort(value as SortOption)}>
+            <Select
+              value={sort}
+              onValueChange={(value) => setSort(value as SortOption)}
+            >
               <SelectTrigger className="w-[200px]">
                 <SelectValue />
               </SelectTrigger>
@@ -155,7 +177,9 @@ export function ResultsView({
                 <SelectItem value="price-asc">Price: Low to High</SelectItem>
                 <SelectItem value="price-desc">Price: High to Low</SelectItem>
                 <SelectItem value="duration-asc">Duration: Shortest</SelectItem>
-                <SelectItem value="departure-asc">Departure: Earliest</SelectItem>
+                <SelectItem value="departure-asc">
+                  Departure: Earliest
+                </SelectItem>
               </SelectContent>
             </Select>
           </div>

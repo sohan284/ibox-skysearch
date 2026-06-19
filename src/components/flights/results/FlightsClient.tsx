@@ -5,9 +5,9 @@ import { useMemo, useState, useEffect } from "react";
 import { MOCK_FLIGHTS } from "@/lib/mock-data";
 import { filterFlights, sortFlights, getUniqueAirlines } from "@/lib/utils";
 import type { Flight, Filters, SortOption, BookingDetails } from "@/lib/types";
-import { ResultsView } from "@/components/flights/ResultsView";
-import { BookingForm } from "@/components/flights/BookingForm";
-import { ConfirmationView } from "@/components/flights/ConfirmationView";
+import { ResultsView } from "./ResultsView";
+import { BookingForm } from "./BookingForm";
+import { ConfirmationView } from "./ConfirmationView";
 
 export function FlightsClient() {
   const searchParams = useSearchParams();
