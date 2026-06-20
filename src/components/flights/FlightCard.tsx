@@ -65,10 +65,7 @@ export function FlightCard({ flight, onSelect }: FlightCardProps) {
                 /person
               </span>
             </div>
-            <Button
-              onClick={onSelect}
-              className="bg-primary hover:bg-primary/90 text-white shadow-lg transition-all duration-300"
-            >
+            <Button onClick={onSelect}>
               Select Flight
             </Button>
           </div>

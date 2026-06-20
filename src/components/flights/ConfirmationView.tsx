@@ -39,17 +39,17 @@ export function ConfirmationView() {
           });
           router.push(`/flights?${params.toString()}`);
         }}
-        className="justify-start px-0 mb-6"
+        className="justify-start w-full px-0 mb-6"
       >
         ← Back to Results
       </Button>
-      <Card className=" transition-all duration-300 border-2 border-gray-100">
-        <CardContent className="p-8 md:p-12">
-          <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
+      <Card className="max-w-3xl mx-auto transition-all duration-300 border-2 border-gray-100">
+        <CardContent className="p-8 ">
+          <div className="w-14 h-14 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <div className="text-primary text-4xl">✓</div>
           </div>
           <h2 className="text-3xl font-bold mb-2">Booking Confirmed!</h2>
-          <p className="text-muted-foreground mb-8">
+          <p className="text-muted-foreground mb-4">
             Thank you for choosing iBox SkySearch
           </p>
 
@@ -110,31 +110,35 @@ export function ConfirmationView() {
               </div>
 
               <div className="border-t pt-4 mt-4">
-                <p className="text-muted-foreground font-medium mb-2">
+                <p className="text-muted-foreground font-medium mb-3">
                   Passengers:
                 </p>
-                <ul className="space-y-2">
+                <div className="space-y-3">
                   {bookingDetails.passengers.map((passenger, index) => (
-                    <li key={index} className="flex items-center gap-2">
-                      <span className="w-6 h-6 flex items-center justify-center bg-gray-100 rounded-full text-xs font-bold">
-                        {index + 1}
-                      </span>
-                      <span className="text-gray-800">
-                        {passenger.fullName}
-                      </span>
-                    </li>
+                    <div
+                      key={index}
+                      className="bg-white border border-gray-200 rounded-lg p-3"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="w-6 h-6 flex items-center justify-center bg-primary/10 text-primary rounded-full text-xs font-bold">
+                          {index + 1}
+                        </span>
+                        <span className="font-semibold text-gray-800">
+                          {passenger.fullName}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground">Email:</span>
+                          <span>{passenger.email}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground">Phone:</span>
+                          <span>{passenger.phone}</span>
+                        </div>
+                      </div>
+                    </div>
                   ))}
-                </ul>
-              </div>
-
-              <div className="border-t pt-4 mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Email</span>
-                  <span className="font-medium">{bookingDetails.email}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">Phone</span>
-                  <span className="font-medium">{bookingDetails.phone}</span>
                 </div>
               </div>
             </div>
@@ -142,10 +146,8 @@ export function ConfirmationView() {
 
           <Button
             onClick={() => {
-              resetAll();
               router.push("/");
             }}
-            className="bg-primary hover:bg-primary/90 text-white shadow-lg transition-all duration-300"
           >
             Search for Another Flight
           </Button>

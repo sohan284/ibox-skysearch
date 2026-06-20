@@ -20,12 +20,12 @@ import { Passenger } from "@/lib/types";
 import { useRouter } from "next/navigation";
 
 const bookingFormSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  phone: z.string().min(5, "Phone number must be at least 5 characters"),
   passengers: z
     .array(
       z.object({
         fullName: z.string().min(2, "Name must be at least 2 characters"),
+        email: z.string().email("Invalid email address"),
+        phone: z.string().min(5, "Phone number must be at least 5 characters"),
       }),
     )
     .min(1, "At least one passenger is required"),
@@ -47,10 +47,10 @@ export function BookingForm() {
   const form = useForm<z.infer<typeof bookingFormSchema>>({
     resolver: zodResolver(bookingFormSchema),
     defaultValues: {
-      email: "",
-      phone: "",
       passengers: Array.from({ length: passengers }, () => ({
         fullName: "",
+        email: "",
+        phone: "",
       })),
     },
   });
@@ -65,8 +65,6 @@ export function BookingForm() {
   const handleSubmit = (values: z.infer<typeof bookingFormSchema>) => {
     setBookingDetails({
       flightId: selectedFlight.id,
-      email: values.email,
-      phone: values.phone,
       passengers: values.passengers as Passenger[],
     });
     router.push(`/flights/${selectedFlight.id}/confirmation`);
@@ -90,7 +88,7 @@ export function BookingForm() {
         ← Back to Results
       </Button>
 
-      <Card className=" transition-all duration-300 border-2 border-gray-100 hover:border-primary/30">
+      <Card className="max-w-3xl mx-auto transition-all duration-300 border-2 border-gray-100 hover:border-primary/30">
         <CardHeader>
           <CardTitle className="text-2xl">Complete Your Booking</CardTitle>
         </CardHeader>
@@ -159,86 +157,94 @@ export function BookingForm() {
               onSubmit={form.handleSubmit(handleSubmit)}
               className="space-y-4"
             >
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <h3 className="font-semibold">Passengers</h3>
                 {fields.map((field, index) => (
-                  <FormField
+                  <div
                     key={field.id}
-                    control={form.control}
-                    name={`passengers.${index}.fullName`}
-                    render={({ field: inputField }) => (
-                      <FormItem>
-                        <Label
-                          htmlFor={`passengers.${index}.fullName`}
-                          className="font-medium"
-                        >
-                          Passenger {index + 1} - Full Name
-                        </Label>
-                        <FormControl>
-                          <Input
-                            id={`passengers.${index}.fullName`}
-                            placeholder={`Passenger ${index + 1} Name`}
-                            className="border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
-                            {...inputField}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                    className="bg-gray-50 rounded-lg p-4 border border-gray-200"
+                  >
+                    <h4 className="font-medium mb-3">Passenger {index + 1}</h4>
+                    <div className="space-y-3 grid lg:grid-cols-3 gap-3">
+                      <FormField
+                        control={form.control}
+                        name={`passengers.${index}.fullName`}
+                        render={({ field: inputField }) => (
+                          <FormItem>
+                            <Label
+                              htmlFor={`passengers.${index}.fullName`}
+                              className="text-sm"
+                            >
+                              Full Name
+                            </Label>
+                            <FormControl>
+                              <Input
+                                id={`passengers.${index}.fullName`}
+                                placeholder="Full Name"
+                                className="border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
+                                {...inputField}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name={`passengers.${index}.email`}
+                        render={({ field: inputField }) => (
+                          <FormItem>
+                            <Label
+                              htmlFor={`passengers.${index}.email`}
+                              className="text-sm"
+                            >
+                              Email
+                            </Label>
+                            <FormControl>
+                              <Input
+                                id={`passengers.${index}.email`}
+                                type="email"
+                                placeholder="email@example.com"
+                                className="border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
+                                {...inputField}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name={`passengers.${index}.phone`}
+                        render={({ field: inputField }) => (
+                          <FormItem>
+                            <Label
+                              htmlFor={`passengers.${index}.phone`}
+                              className="text-sm"
+                            >
+                              Phone
+                            </Label>
+                            <FormControl>
+                              <Input
+                                id={`passengers.${index}.phone`}
+                                type="tel"
+                                placeholder="+880 1700 000000"
+                                className="border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
+                                {...inputField}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
                 ))}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <Label htmlFor="email" className="font-medium">
-                        Email Address
-                      </Label>
-                      <FormControl>
-                        <Input
-                          id="email"
-                          type="email"
-                          placeholder="john@example.com"
-                          className="border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <Label htmlFor="phone" className="font-medium">
-                        Phone Number
-                      </Label>
-                      <FormControl>
-                        <Input
-                          id="phone"
-                          type="tel"
-                          placeholder="+880 1700 000000"
-                          className="border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-white shadow-lg transition-all duration-300"
-              >
+              <Button type="submit" size="lg" className="w-full">
                 Confirm Booking
               </Button>
             </form>

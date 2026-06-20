@@ -13,8 +13,6 @@ export interface Flight {
   date: string; // YYYY-MM-DD
 }
 
-
-
 export interface Filters {
   airlines: string[];
   stops: number[];
@@ -24,12 +22,12 @@ export interface Filters {
 
 export interface Passenger {
   fullName: string;
+  email: string;
+  phone: string;
 }
 
 export interface BookingDetails {
   flightId: string;
-  email: string;
-  phone: string;
   passengers: Passenger[];
 }
 

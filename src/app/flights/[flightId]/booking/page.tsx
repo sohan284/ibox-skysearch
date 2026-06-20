@@ -26,7 +26,7 @@ export default function BookingPage() {
 
   if (!selectedFlight) {
     return (
-      <div className="min-h-screen py-8">
+      <div className=" py-8">
         <BookingFormSkeleton />
       </div>
     );
