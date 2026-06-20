@@ -42,12 +42,10 @@ const AirportSearch: React.FC<AirportSearchProps> = ({
 
   return (
     <div ref={wrapperRef} className="relative">
-      <label className="block text-gray-600 font-medium mb-1 text-center">
+      <label className="block text-gray-600 font-medium mb-1 text-start">
         {label}
       </label>
-      <h1 className="text-center text-[40px] text-primary mt-1 mb-2">
-        {value?.code || "---"}
-      </h1>
+
       <div
         className="bg-[#d7e7f4] rounded flex items-center cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}

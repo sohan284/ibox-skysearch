@@ -22,21 +22,30 @@ A modern, responsive flight search and booking application built with Next.js, T
 
 ### Booking Flow
 - Select a flight from search results
-- Complete booking form with passenger details (name, email, phone)
-- Receive booking confirmation with unique reference number
+- Complete booking form with individual passenger details:
+  - Full name
+  - Email
+  - Phone number
+- Receive booking confirmation with unique reference number and passenger details
 
 ### User Experience
 - Responsive design that works on mobile, tablet, and desktop
 - Loading states for better UX
 - Empty state when no flights match filters
 - Accessible with semantic HTML and keyboard navigation
+- Custom button component for consistent styling across all pages
 
 ## Tech Stack
 
 - **Next.js 16** - React framework
 - **TypeScript** - Type safety
 - **Tailwind CSS** - Utility-first CSS framework
-- **React Hooks** - useState, useMemo for state management
+- **Zustand** - State management
+- **React Hook Form** - Form handling with validation
+- **Zod** - Schema validation
+- **Class Variance Authority** - Component variants
+- **Sonner** - Toast notifications
+- **Shadcn UI** - Component library
 
 ## Getting Started
 
@@ -71,21 +80,42 @@ npm start
 ```
 src/
 ├── app/
-│   ├── page.tsx          # Main application page (all components)
-│   ├── layout.tsx        # Root layout
-│   └── globals.css       # Global styles
+│   ├── page.tsx                # Home page
+│   ├── layout.tsx              # Root layout
+│   ├── globals.css             # Global styles
+│   └── flights/
+│       ├── page.tsx            # Flight search results
+│       └── [flightId]/
+│           ├── booking/page.tsx # Booking form
+│           └── confirmation/page.tsx # Booking confirmation
+├── components/
+│   ├── ui/
+│   │   ├── button.tsx         # Custom button component
+│   │   ├── card.tsx
+│   │   ├── input.tsx
+│   │   └── ...
+│   ├── flights/
+│   │   ├── BookingForm.tsx
+│   │   ├── FlightCard.tsx
+│   │   └── ...
+│   ├── home/
+│   │   └── FlightSearchBox.tsx
+│   └── shared/
 ├── lib/
-│   ├── types.ts          # TypeScript type definitions
-│   ├── mock-data.ts      # Mock flight data (31 flights)
-│   └── utils.ts          # Utility functions (filter, sort, format)
-└── components/           # (Can be split into separate files for scalability)
+│   ├── types.ts               # TypeScript type definitions
+│   ├── mock-data.ts           # Mock flight data
+│   └── utils.ts               # Utility functions
+└── store/
+    └── flightSearchStore.ts   # Zustand store
 ```
 
 ## State Management
 
-The application uses React's built-in hooks:
-- `useState` - For managing application state (search params, filters, selected flight, etc.)
-- `useMemo` - For memoizing computed values (filtered/sorted flights, unique airlines)
+The application uses Zustand for global state management:
+- Flight search parameters
+- Filters and sorting
+- Selected flight
+- Booking details
 
 ## Future Improvements
 

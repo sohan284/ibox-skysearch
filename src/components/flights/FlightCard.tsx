@@ -10,7 +10,7 @@ interface FlightCardProps {
 
 export function FlightCard({ flight, onSelect }: FlightCardProps) {
   return (
-    <Card className="hover:shadow-lg transition-all duration-300 border-2 border-gray-100 hover:border-primary/30">
+    <Card className=" transition-all duration-300 border-2 border-gray-100 hover:border-primary/30">
       <CardContent className="p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <div className="flex-1">
@@ -65,10 +65,7 @@ export function FlightCard({ flight, onSelect }: FlightCardProps) {
                 /person
               </span>
             </div>
-            <Button
-              onClick={onSelect}
-              className="bg-primary hover:bg-primary/90 text-white shadow-lg transition-all duration-300"
-            >
+            <Button onClick={onSelect}>
               Select Flight
             </Button>
           </div>

@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,14 +13,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "iBox SkySearch - Find Cheap Flights & Book Airline Tickets",
+  title: "iBox SkySearch - Find cheap flights & book airline tickets",
   description:
     "Search and compare flights from hundreds of airlines. Find the best deals on plane tickets for your next trip with iBox SkySearch.",
   keywords:
     "flights, cheap flights, airline tickets, flight search, book flights, travel, flight deals",
   authors: [{ name: "iBox Lab" }],
   openGraph: {
-    title: "iBox SkySearch - Find Cheap Flights & Book Airline Tickets",
+    title: "iBox SkySearch - Find cheap flights & book airline tickets",
     description:
       "Search and compare flights from hundreds of airlines. Find the best deals on plane tickets for your next trip.",
     url: "https://ibox-skysearch.com",
@@ -29,7 +30,7 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "iBox SkySearch - Find Cheap Flights & Book Airline Tickets",
+    title: "iBox SkySearch - Find cheap flights & book airline tickets",
     description:
       "Search and compare flights from hundreds of airlines. Find the best deals on plane tickets for your next trip.",
     creator: "@iboxlab",
@@ -45,12 +46,20 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#2563eb" />
+        <meta name="color-scheme" content="light dark" />
+        <meta name="darkreader-lock" content="true" />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className=" flex flex-col">
+        <main>
+          <div className="container mx-auto px-4">{children}</div>
+        </main>
+        <Toaster />
+      </body>
     </html>
   );
 }

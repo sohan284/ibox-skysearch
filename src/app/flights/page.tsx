@@ -1,5 +1,5 @@
-import { Header } from "@/components/shared/Header";
 import { FlightsClient } from "@/components/flights/FlightsClient";
+import { SearchInfoBar } from "@/components/flights/SearchInfoBar";
 import { BANGLADESH_AIRPORTS } from "@/lib/airports";
 
 interface FlightsPageProps {
@@ -25,11 +25,11 @@ export default async function FlightsPage({ searchParams }: FlightsPageProps) {
     (airport) => airport.code === destination,
   );
 
-  const subtitle = `${originAirport?.city || origin} → ${destAirport?.city || destination} on ${date} • ${passengers} passenger${passengers > 1 ? "s" : ""}`;
+  const searchInfo = `${originAirport?.city || origin} → ${destAirport?.city || destination} on ${date} • ${passengers} passenger${passengers > 1 ? "s" : ""}`;
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
-      <Header title="iBox SkySearch" subtitle={subtitle} />
+    <div className="  font-sans">
+      <SearchInfoBar searchInfo={searchInfo} />
       <FlightsClient />
     </div>
   );

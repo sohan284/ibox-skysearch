@@ -24,7 +24,10 @@ export function filterFlights(flights: Flight[], filters: Filters): Flight[] {
     if (filters.stops.length > 0 && !filters.stops.includes(flight.stops)) {
       return false;
     }
-    if (flight.price < filters.minPrice || flight.price > filters.maxPrice) {
+    if (flight.price < filters.minPrice) {
+      return false;
+    }
+    if (filters.maxPrice > 0 && flight.price > filters.maxPrice) {
       return false;
     }
     return true;

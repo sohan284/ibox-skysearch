@@ -3,8 +3,6 @@
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { ResultsView } from "./ResultsView";
-import { BookingForm } from "./BookingForm";
-import { ConfirmationView } from "./ConfirmationView";
 import { useFlightSearchStore } from "@/store/flightSearchStore";
 
 export function FlightsClient() {
@@ -14,7 +12,6 @@ export function FlightsClient() {
     destination: storeDestination,
     date: storeDate,
     passengers: storePassengers,
-    step,
     setOrigin,
     setDestination,
     setDate,
@@ -35,10 +32,8 @@ export function FlightsClient() {
   }, [searchParams, storeOrigin, storeDestination, storeDate, storePassengers, setOrigin, setDestination, setDate, setPassengers]);
 
   return (
-    <main className="max-w-6xl mx-auto px-4 py-8">
-      {step === "results" && <ResultsView />}
-      {step === "booking" && <BookingForm />}
-      {step === "confirmation" && <ConfirmationView />}
+    <main className="py-8">
+      <ResultsView />
     </main>
   );
 }
