@@ -8,20 +8,18 @@ interface FlightSearchState {
   destination: string;
   date: string; // YYYY-MM-DD
   passengers: number;
-  
+
   // UI state
-  step: "results" | "booking" | "confirmation";
   filters: Filters;
   sort: SortOption;
   selectedFlight: Flight | null;
   bookingDetails: BookingDetails | null;
-  
+
   // Actions
   setOrigin: (origin: string) => void;
   setDestination: (destination: string) => void;
   setDate: (date: string) => void;
   setPassengers: (passengers: number) => void;
-  setStep: (step: "results" | "booking" | "confirmation") => void;
   setFilters: (filters: Filters | ((prev: Filters) => Filters)) => void;
   setSort: (sort: SortOption) => void;
   setSelectedFlight: (flight: Flight | null) => void;
@@ -37,7 +35,6 @@ const getDefaultState = (): Omit<
   | "setDestination"
   | "setDate"
   | "setPassengers"
-  | "setStep"
   | "setFilters"
   | "setSort"
   | "setSelectedFlight"
@@ -52,7 +49,6 @@ const getDefaultState = (): Omit<
     destination: "",
     date: today.toISOString().split("T")[0],
     passengers: 1,
-    step: "results",
     filters: {
       airlines: [],
       stops: [],
@@ -73,10 +69,11 @@ export const useFlightSearchStore = create<FlightSearchState>()(
       setDestination: (destination) => set({ destination }),
       setDate: (date) => set({ date }),
       setPassengers: (passengers) => set({ passengers }),
-      setStep: (step) => set({ step }),
-      setFilters: (filters) => set((state) => ({
-        filters: typeof filters === 'function' ? filters(state.filters) : filters,
-      })),
+      setFilters: (filters) =>
+        set((state) => ({
+          filters:
+            typeof filters === "function" ? filters(state.filters) : filters,
+        })),
       setSort: (sort) => set({ sort }),
       setSelectedFlight: (flight) => set({ selectedFlight: flight }),
       setBookingDetails: (details) => set({ bookingDetails: details }),
@@ -95,6 +92,6 @@ export const useFlightSearchStore = create<FlightSearchState>()(
     {
       name: "flight-search-storage", // Name of the sessionStorage key
       storage: createJSONStorage(() => sessionStorage),
-    }
-  )
+    },
+  ),
 );

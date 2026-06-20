@@ -11,7 +11,7 @@ export function SearchInfoBar({ searchInfo }: SearchInfoBarProps) {
   const router = useRouter();
 
   return (
-    <div className="bg-white border-b border-gray-200 sticky top-[50px] z-40 px-4 py-3 shadow-sm">
+    <div className="bg-white border-b border-gray-200 sticky top-0 z-40 px-4 py-3 shadow-sm">
       <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
         <button
           onClick={() => router.back()}

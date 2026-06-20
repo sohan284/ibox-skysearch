@@ -50,6 +50,7 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
       return;
     }
 
+    const totalPassengers = passengers;
     const formattedDate = departureDate
       ? format(departureDate, "yyyy-MM-dd")
       : "";
@@ -58,13 +59,13 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
     setOrigin(fromAirport?.code || "");
     setDestination(toAirport?.code || "");
     setDate(formattedDate);
-    setPassengers(passengers);
+    setPassengers(totalPassengers);
 
     const params = new URLSearchParams({
       origin: fromAirport?.code || "",
       destination: toAirport?.code || "",
       date: formattedDate,
-      passengers: passengers.toString(),
+      passengers: totalPassengers.toString(),
     });
 
     router.push(`/flights?${params.toString()}`);
@@ -72,7 +73,7 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
 
   return (
     <div>
-      <div className="relative max-w-[1000px] mx-auto">
+      <div className="relative max-w-3xl mx-auto">
         <div className="bg-primary/5 rounded-xl p-5 border-dotted border-gray-300">
           <div className="space-y-3">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">

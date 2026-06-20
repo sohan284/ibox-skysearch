@@ -28,7 +28,7 @@ export default async function FlightsPage({ searchParams }: FlightsPageProps) {
   const searchInfo = `${originAirport?.city || origin} → ${destAirport?.city || destination} on ${date} • ${passengers} passenger${passengers > 1 ? "s" : ""}`;
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
+    <div className=" bg-gray-50 font-sans">
       <SearchInfoBar searchInfo={searchInfo} />
       <FlightsClient />
     </div>

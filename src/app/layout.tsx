@@ -1,6 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/shared/Navbar";
 import { Toaster } from "sonner";
 
 const geistSans = Geist({
@@ -47,14 +46,19 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#2563eb" />
+        <meta name="color-scheme" content="light dark" />
+        <meta name="darkreader-lock" content="true" />
       </head>
-      <body className="min-h-full flex flex-col">
-        <Navbar title="iBox SkySearch" />
-        <div className="mt-10">{children}</div> <Toaster />
+      <body className=" flex flex-col">
+        <main>
+          <div className="container mx-auto px-4">{children}</div>
+        </main>
+        <Toaster />
       </body>
     </html>
   );

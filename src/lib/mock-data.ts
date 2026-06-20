@@ -50,7 +50,7 @@ const generateFlight = (
   route: { origin: string; destination: string },
   date: string,
   airline: string,
-  departureTime: string,
+  departureTime: string
 ): Flight => {
   const durationMinutes = 45 + Math.floor(Math.random() * 30); // 45-75 mins
   const stops = Math.random() > 0.8 ? 1 : 0; // 20% chance 1 stop
@@ -87,10 +87,9 @@ ROUTES.forEach((route) => {
       // Generate 2-3 flights per airline per route per date
       const numFlights = 2 + Math.floor(Math.random() * 2);
       for (let i = 0; i < numFlights; i++) {
-        const departureTime =
-          DEPARTURE_TIMES[Math.floor(Math.random() * DEPARTURE_TIMES.length)];
+        const departureTime = DEPARTURE_TIMES[Math.floor(Math.random() * DEPARTURE_TIMES.length)];
         allFlights.push(
-          generateFlight(flightId++, route, date, airline, departureTime),
+          generateFlight(flightId++, route, date, airline, departureTime)
         );
       }
     });
@@ -98,3 +97,7 @@ ROUTES.forEach((route) => {
 });
 
 export const MOCK_FLIGHTS: Flight[] = allFlights;
+
+export function getFlightById(id: string): Flight | null {
+  return MOCK_FLIGHTS.find(flight => flight.id === id) || null;
+}

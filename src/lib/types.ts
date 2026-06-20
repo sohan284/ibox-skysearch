@@ -22,11 +22,15 @@ export interface Filters {
   maxPrice: number;
 }
 
+export interface Passenger {
+  fullName: string;
+}
+
 export interface BookingDetails {
   flightId: string;
-  passengerName: string;
   email: string;
   phone: string;
+  passengers: Passenger[];
 }
 
 export type SortOption =

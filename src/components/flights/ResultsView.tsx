@@ -20,17 +20,11 @@ import { useMemo } from "react";
 
 export function ResultsView() {
   const router = useRouter();
-  const {
-    filters,
-    sort,
-    setSort,
-    setSelectedFlight,
-    setStep,
-  } = useFlightSearchStore();
+  const { filters, sort, setSort, setSelectedFlight } = useFlightSearchStore();
 
   // Get search params from store to filter flights
   const { origin, destination, date } = useFlightSearchStore();
-  
+
   // Calculate derived values
   const searchFilteredFlights = useMemo(() => {
     return MOCK_FLIGHTS.filter((flight) => {
@@ -43,7 +37,7 @@ export function ResultsView() {
 
   const airlines = useMemo(
     () => getUniqueAirlines(searchFilteredFlights),
-    [searchFilteredFlights]
+    [searchFilteredFlights],
   );
 
   const maxPrice = useMemo(() => {
@@ -56,14 +50,17 @@ export function ResultsView() {
     return sortFlights(
       filterFlights(searchFilteredFlights, {
         ...filters,
-        maxPrice: filters.maxPrice === 0 || filters.maxPrice === 1000000 ? maxPrice : filters.maxPrice,
+        maxPrice:
+          filters.maxPrice === 0 || filters.maxPrice === 1000000
+            ? maxPrice
+            : filters.maxPrice,
       }),
       sort,
     );
   }, [filters, sort, searchFilteredFlights, maxPrice]);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-6">
+    <div className="py-6">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Left Filters Sticky */}
         <div className="lg:col-span-1">
@@ -87,7 +84,9 @@ export function ResultsView() {
                 <SelectContent>
                   <SelectItem value="price-asc">Price: Low to High</SelectItem>
                   <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                  <SelectItem value="duration-asc">Duration: Shortest</SelectItem>
+                  <SelectItem value="duration-asc">
+                    Duration: Shortest
+                  </SelectItem>
                   <SelectItem value="departure-asc">
                     Departure: Earliest
                   </SelectItem>
@@ -113,7 +112,7 @@ export function ResultsView() {
                 flight={flight}
                 onSelect={() => {
                   setSelectedFlight(flight);
-                  setStep("booking");
+                  router.push(`/flights/${flight.id}/booking`);
                 }}
               />
             ))
