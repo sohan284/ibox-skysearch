@@ -121,13 +121,28 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-serif;
   }
+
   html {
     @apply font-sans;
   }
+
   button {
     cursor: pointer;
+  }
+}
+
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+  }
+  50% {
+    transform: translateX(100%) skewX(-15deg);
+  }
+  100% {
+    transform: translateX(100%) skewX(-15deg);
   }
 }

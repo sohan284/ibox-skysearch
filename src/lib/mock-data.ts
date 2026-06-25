@@ -54,7 +54,15 @@ const generateFlight = (
 ): Flight => {
   const durationMinutes = 45 + Math.floor(Math.random() * 30); // 45-75 mins
   const stops = Math.random() > 0.8 ? 1 : 0; // 20% chance 1 stop
-  const basePrice = 3000 + Math.floor(Math.random() * 5000); // 3000-8000 BDT
+  const classType = Math.random() > 0.9 ? "Business" : "Economy";
+  const refundable = Math.random() > 0.3;
+  const cabinBaggage = classType === "Business" ? "10 kg" : "7 kg";
+  const checkedBaggage = classType === "Business" ? "35 kg" : "20 kg";
+
+  let basePrice = 3000 + Math.floor(Math.random() * 5000); // 3000-8000 BDT
+  if (classType === "Business") {
+    basePrice *= 2;
+  }
 
   // Calculate arrival time
   const [hours, minutes] = departureTime.split(":").map(Number);
@@ -74,6 +82,10 @@ const generateFlight = (
     price: basePrice,
     currency: "BDT",
     date,
+    classType,
+    refundable,
+    cabinBaggage,
+    checkedBaggage,
   };
 };
 
@@ -97,7 +109,3 @@ ROUTES.forEach((route) => {
 });
 
 export const MOCK_FLIGHTS: Flight[] = allFlights;
-
-export function getFlightById(id: string): Flight | null {
-  return MOCK_FLIGHTS.find(flight => flight.id === id) || null;
-}

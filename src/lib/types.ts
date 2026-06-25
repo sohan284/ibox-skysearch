@@ -11,6 +11,10 @@ export interface Flight {
   price: number;
   currency: string;
   date: string; // YYYY-MM-DD
+  classType: "Economy" | "Business";
+  refundable: boolean;
+  cabinBaggage: string;
+  checkedBaggage: string;
 }
 
 export interface Filters {
@@ -18,6 +22,8 @@ export interface Filters {
   stops: number[];
   minPrice: number;
   maxPrice: number;
+  classTypes: ("Economy" | "Business")[];
+  refundableOnly: boolean;
 }
 
 export interface Passenger {

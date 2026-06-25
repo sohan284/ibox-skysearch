@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useFlightSearchStore } from "@/store/flightSearchStore";
-import { getFlightById } from "@/lib/mock-data";
+import { getFlightById } from "@/lib/api/flights";
 import { ConfirmationView } from "@/components/flights/ConfirmationView";
 import { ConfirmationViewSkeleton } from "@/components/flights/ConfirmationViewSkeleton";
 
@@ -16,21 +16,27 @@ export default function ConfirmationPage() {
     setSelectedFlight,
     setBookingDetails,
   } = useFlightSearchStore();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Find the flight by ID
-    const flight = getFlightById(params.flightId);
-    if (!flight) {
-      router.replace("/");
-      return;
+    async function fetchFlight() {
+      setIsLoading(true);
+      // Find the flight by ID using our API layer
+      const flight = await getFlightById(params.flightId);
+      if (!flight) {
+        router.replace("/");
+        return;
+      }
+      if (!selectedFlight || selectedFlight.id !== params.flightId) {
+        setSelectedFlight(flight);
+      }
+      // Check if we have booking details (should have been set on previous step)
+      if (!bookingDetails) {
+        router.replace(`/flights/${params.flightId}/booking`);
+      }
+      setIsLoading(false);
     }
-    if (!selectedFlight || selectedFlight.id !== params.flightId) {
-      setSelectedFlight(flight);
-    }
-    // Check if we have booking details (should have been set on previous step)
-    if (!bookingDetails) {
-      router.replace(`/flights/${params.flightId}/booking`);
-    }
+    fetchFlight();
   }, [
     params.flightId,
     selectedFlight,
@@ -40,7 +46,7 @@ export default function ConfirmationPage() {
     router,
   ]);
 
-  if (!selectedFlight || !bookingDetails) {
+  if (isLoading || !selectedFlight || !bookingDetails) {
     return (
       <div className="py-8">
         <ConfirmationViewSkeleton />

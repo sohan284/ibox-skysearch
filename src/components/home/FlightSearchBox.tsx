@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { useFlightSearchStore } from "@/store/flightSearchStore";
 import { toast } from "sonner";
+import { CustomButton } from "../ui/CustomButton";
 
 interface FlightSearchBoxProps {
   isModify?: boolean;
@@ -30,7 +31,7 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
   const [toAirport, setToAirport] = useState<Airport | null>(
     BANGLADESH_AIRPORTS.find((airport) => airport.code === "CXB") || null,
   );
-  const [departureDate, setDepartureDate] = useState<Date | null>(null);
+  const [departureDate, setDepartureDate] = useState<Date | null>(new Date());
 
   // Sync local state with store on mount if isModify is true
   useEffect(() => {
@@ -102,12 +103,14 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
             </div>
           </div>
           <div className="mt-6">
-            <button
+            <CustomButton
+              variant="gradient"
+              size="lg"
+              className="w-full"
               onClick={handleSearchFlight}
-              className="w-full bg-primary text-white font-bold py-3 text-sm rounded-sm cursor-pointer"
             >
               SEARCH FOR FLIGHT
-            </button>
+            </CustomButton>
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,30 +11,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
+import { IoClose } from "react-icons/io5";
 import { FlightCard } from "./FlightCard";
 import { FlightFilters } from "./FlightFilters";
 import { useFlightSearchStore } from "@/store/flightSearchStore";
 import { useRouter } from "next/navigation";
-import { MOCK_FLIGHTS } from "@/lib/mock-data";
 import { filterFlights, sortFlights, getUniqueAirlines } from "@/lib/utils";
 import { useMemo } from "react";
+import { APP_CONSTANTS, SORT_OPTIONS } from "@/lib/constants";
+import type { SortOption } from "@/lib/types";
+import { useFlights } from "@/hooks/useFlights";
 
 export function ResultsView() {
   const router = useRouter();
   const { filters, sort, setSort, setSelectedFlight } = useFlightSearchStore();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Get search params from store to filter flights
   const { origin, destination, date } = useFlightSearchStore();
-
-  // Calculate derived values
-  const searchFilteredFlights = useMemo(() => {
-    return MOCK_FLIGHTS.filter((flight) => {
-      if (origin && flight.origin !== origin) return false;
-      if (destination && flight.destination !== destination) return false;
-      if (date && flight.date !== date) return false;
-      return true;
-    });
-  }, [origin, destination, date]);
+  const { data: searchFilteredFlights, isLoading, error } = useFlights(origin, destination, date);
 
   const airlines = useMemo(
     () => getUniqueAirlines(searchFilteredFlights),
@@ -51,7 +56,7 @@ export function ResultsView() {
       filterFlights(searchFilteredFlights, {
         ...filters,
         maxPrice:
-          filters.maxPrice === 0 || filters.maxPrice === 1000000
+          filters.maxPrice === 0 || filters.maxPrice === APP_CONSTANTS.MAX_PRICE_DEFAULT
             ? maxPrice
             : filters.maxPrice,
       }),
@@ -62,40 +67,65 @@ export function ResultsView() {
   return (
     <div className="py-6">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Left Filters Sticky */}
-        <div className="lg:col-span-1">
+        {/* Left Filters Sticky (Desktop Only) */}
+        <div className="hidden lg:block lg:col-span-1">
           <div className="sticky top-[calc(50px+52px)]">
             <FlightFilters airlines={airlines} maxPrice={maxPrice} />
           </div>
         </div>
 
         {/* Right Flight Cards */}
-        <div className="lg:col-span-3 space-y-4">
+        <div className="lg:col-span-4 lg:col-start-2 space-y-4">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center gap-3">
-              <Label className="mb-0">Sort by:</Label>
-              <Select
-                value={sort}
-                onValueChange={(value) => setSort(value as any)}
-              >
-                <SelectTrigger className="w-[200px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                  <SelectItem value="price-desc">Price: High to Low</SelectItem>
-                  <SelectItem value="duration-asc">
-                    Duration: Shortest
-                  </SelectItem>
-                  <SelectItem value="departure-asc">
-                    Departure: Earliest
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+              {/* Filter Button (Mobile Only) */}
+              <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen} direction="left">
+                <DrawerTrigger asChild className="lg:hidden">
+                  <Button variant="default" size="sm">
+                    Filters
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent>
+                  <DrawerHeader className="flex flex-row items-center justify-between border-b p-4">
+                    <DrawerTitle className="text-lg font-semibold">Filters</DrawerTitle>
+                    <DrawerClose asChild>
+                      <Button variant="ghost" size="icon" className="h-9 w-9 rounded-md">
+                        <IoClose className="h-5 w-5" />
+                        <span className="sr-only">Close</span>
+                      </Button>
+                    </DrawerClose>
+                  </DrawerHeader>
+                  <div className="p-4 flex-1 overflow-y-auto">
+                    <FlightFilters airlines={airlines} maxPrice={maxPrice} />
+                  </div>
+                </DrawerContent>
+              </Drawer>
             </div>
           </div>
 
-          {filteredFlights.length === 0 ? (
+          {error ? (
+            <Card>
+              <CardContent className="p-12 text-center">
+                <div className="text-gray-400 text-6xl mb-4">⚠️</div>
+                <h3 className="text-xl font-semibold mb-2">Something went wrong</h3>
+                <p className="text-muted-foreground">{error.message}</p>
+              </CardContent>
+            </Card>
+          ) : isLoading ? (
+            <div className="space-y-4">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Card key={i} className="border-2 border-gray-100">
+                  <CardContent className="p-6">
+                    <div className="flex flex-col md:flex-row gap-4">
+                      <Skeleton className="h-6 w-40" />
+                      <Skeleton className="h-6 w-32" />
+                      <Skeleton className="h-10 w-40 ml-auto" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : filteredFlights.length === 0 ? (
             <Card>
               <CardContent className="p-12 text-center">
                 <div className="text-gray-400 text-6xl mb-4">✈️</div>

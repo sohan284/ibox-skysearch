@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import type { Flight, Filters, SortOption, BookingDetails } from "@/lib/types";
+import { APP_CONSTANTS } from "@/lib/constants";
 
 interface FlightSearchState {
   // Search params
@@ -53,7 +54,9 @@ const getDefaultState = (): Omit<
       airlines: [],
       stops: [],
       minPrice: 0,
-      maxPrice: 1000000, // High enough default to not filter anything
+      maxPrice: APP_CONSTANTS.MAX_PRICE_DEFAULT,
+      classTypes: [],
+      refundableOnly: false,
     },
     sort: "price-asc",
     selectedFlight: null,

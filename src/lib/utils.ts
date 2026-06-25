@@ -12,6 +12,32 @@ export function formatDuration(minutes: number): string {
   return `${hours}h ${mins}m`;
 }
 
+export function getAirlineInitials(airlineName: string): string {
+  const name = airlineName.toLowerCase();
+  if (name.includes("biman")) return "BB";
+  if (name.includes("novo")) return "NO";
+  if (name.includes("us-bangla")) return "US";
+  if (name.includes("astra")) return "AA";
+  return airlineName.substring(0, 2).toUpperCase();
+}
+
+export function getAirlineAvatarStyles(airlineName: string): string {
+  const name = airlineName.toLowerCase();
+  if (name.includes("biman")) {
+    return "bg-green-100 text-green-700 border border-green-200";
+  }
+  if (name.includes("novo")) {
+    return "bg-blue-100 text-blue-700 border border-blue-200";
+  }
+  if (name.includes("us-bangla")) {
+    return "bg-rose-100 text-rose-700 border border-rose-200";
+  }
+  if (name.includes("astra")) {
+    return "bg-amber-100 text-amber-700 border border-amber-200";
+  }
+  return "bg-primary/10 text-primary border border-primary/20";
+}
+
 export function getUniqueAirlines(flights: Flight[]): string[] {
   return Array.from(new Set(flights.map((f) => f.airline))).sort();
 }
@@ -28,6 +54,12 @@ export function filterFlights(flights: Flight[], filters: Filters): Flight[] {
       return false;
     }
     if (filters.maxPrice > 0 && flight.price > filters.maxPrice) {
+      return false;
+    }
+    if (filters.classTypes && filters.classTypes.length > 0 && !filters.classTypes.includes(flight.classType)) {
+      return false;
+    }
+    if (filters.refundableOnly && !flight.refundable) {
       return false;
     }
     return true;

@@ -4,7 +4,17 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useFlightSearchStore } from '@/store/flightSearchStore';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { STOP_OPTIONS, SORT_OPTIONS } from '@/lib/constants';
+import { SortOption } from '@/lib/types';
 
 interface FlightFiltersProps {
   airlines: string[];
@@ -12,19 +22,27 @@ interface FlightFiltersProps {
 }
 
 export function FlightFilters({ airlines, maxPrice }: FlightFiltersProps) {
-  const { filters, setFilters } = useFlightSearchStore();
+  const { filters, setFilters, sort, setSort } = useFlightSearchStore();
 
   return (
     <Card className="sticky top-8">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
-          <CardTitle>Filters</CardTitle>
+          <CardTitle>Filters & Sorting</CardTitle>
           <Button
             variant="ghost"
             size="sm"
-            onClick={() =>
-              setFilters({ airlines: [], stops: [], minPrice: 0, maxPrice })
-            }
+            onClick={() => {
+              setFilters({
+                airlines: [],
+                stops: [],
+                minPrice: 0,
+                maxPrice,
+                classTypes: [],
+                refundableOnly: false,
+              });
+              setSort("price-asc");
+            }}
             className="text-primary hover:text-primary/90"
           >
             Reset
@@ -32,6 +50,26 @@ export function FlightFilters({ airlines, maxPrice }: FlightFiltersProps) {
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Sort By */}
+        <div className="space-y-2  border-gray-100">
+          <Label>Sort by</Label>
+          <Select
+            value={sort}
+            onValueChange={(value) => setSort(value as SortOption)}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {SORT_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         <div className="space-y-3">
           <Label>Airlines</Label>
           <div className="space-y-2">
@@ -40,11 +78,9 @@ export function FlightFilters({ airlines, maxPrice }: FlightFiltersProps) {
                 key={airline}
                 className="flex items-center gap-2 cursor-pointer"
               >
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={filters.airlines.includes(airline)}
-                  onChange={(e) => {
-                    const checked = e.target.checked;
+                  onCheckedChange={(checked) => {
                     setFilters((prev) => ({
                       ...prev,
                       airlines: checked
@@ -52,7 +88,6 @@ export function FlightFilters({ airlines, maxPrice }: FlightFiltersProps) {
                         : prev.airlines.filter((a) => a !== airline),
                     }));
                   }}
-                  className="rounded border-gray-300 text-primary focus:ring-primary"
                 />
                 <span className="text-sm">{airline}</span>
               </label>
@@ -63,31 +98,24 @@ export function FlightFilters({ airlines, maxPrice }: FlightFiltersProps) {
         <div className="space-y-3">
           <Label>Stops</Label>
           <div className="space-y-2">
-            {[0, 1, 2].map((stop) => (
+            {STOP_OPTIONS.map((stop) => (
               <label
-                key={stop}
+                key={stop.value}
                 className="flex items-center gap-2 cursor-pointer"
               >
-                <input
-                  type="checkbox"
-                  checked={filters.stops.includes(stop)}
-                  onChange={(e) => {
-                    const checked = e.target.checked;
+                <Checkbox
+                  checked={filters.stops.includes(stop.value)}
+                  onCheckedChange={(checked) => {
                     setFilters((prev) => ({
                       ...prev,
                       stops: checked
-                        ? [...prev.stops, stop]
-                        : prev.stops.filter((s) => s !== stop),
+                        ? [...prev.stops, stop.value]
+                        : prev.stops.filter((s) => s !== stop.value),
                     }));
                   }}
-                  className="rounded border-gray-300 text-primary focus:ring-primary"
                 />
                 <span className="text-sm">
-                  {stop === 0
-                    ? 'Non-stop'
-                    : stop === 1
-                    ? '1 stop'
-                    : '2+ stops'}
+                  {stop.label}
                 </span>
               </label>
             ))}
@@ -124,6 +152,51 @@ export function FlightFilters({ airlines, maxPrice }: FlightFiltersProps) {
                 }))
               }
             />
+          </div>
+        </div>
+
+        {/* Cabin Class Filter */}
+        <div className="space-y-3">
+          <Label>Cabin Class</Label>
+          <div className="space-y-2">
+            {(["Economy", "Business"] as const).map((cls) => (
+              <label
+                key={cls}
+                className="flex items-center gap-2 cursor-pointer"
+              >
+                <Checkbox
+                  checked={filters.classTypes?.includes(cls) || false}
+                  onCheckedChange={(checked) => {
+                    setFilters((prev) => ({
+                      ...prev,
+                      classTypes: checked
+                        ? [...(prev.classTypes || []), cls]
+                        : (prev.classTypes || []).filter((c) => c !== cls),
+                    }));
+                  }}
+                />
+                <span className="text-sm">{cls} Class</span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Refundability Filter */}
+        <div className="space-y-3">
+          <Label>Ticket Option</Label>
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <Checkbox
+                checked={filters.refundableOnly || false}
+                onCheckedChange={(checked) => {
+                  setFilters((prev) => ({
+                    ...prev,
+                    refundableOnly: !!checked,
+                  }));
+                }}
+              />
+              <span className="text-sm">Refundable Flights Only</span>
+            </label>
           </div>
         </div>
       </CardContent>
