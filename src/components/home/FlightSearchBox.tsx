@@ -13,15 +13,17 @@ import { CustomButton } from "../ui/CustomButton";
 
 interface FlightSearchBoxProps {
   isModify?: boolean;
+  onSearchComplete?: () => void;
 }
 
 const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
   isModify = false,
+  onSearchComplete,
 }) => {
   const router = useRouter();
 
   // Get store
-  const { setOrigin, setDestination, setDate, setPassengers, resetAll } =
+  const { origin, destination, date, passengers: storePassengers, setOrigin, setDestination, setDate, setPassengers, resetAll } =
     useFlightSearchStore();
 
   const [passengers, setPassengersCount] = useState(1);
@@ -36,9 +38,22 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
   // Sync local state with store on mount if isModify is true
   useEffect(() => {
     if (isModify) {
-      // Optional: implement logic to load from store
+      if (origin) {
+        const airport = BANGLADESH_AIRPORTS.find((a) => a.code === origin);
+        if (airport) setFromAirport(airport);
+      }
+      if (destination) {
+        const airport = BANGLADESH_AIRPORTS.find((a) => a.code === destination);
+        if (airport) setToAirport(airport);
+      }
+      if (date) {
+        setDepartureDate(new Date(date));
+      }
+      if (storePassengers) {
+        setPassengersCount(storePassengers);
+      }
     }
-  }, [isModify]);
+  }, [isModify, origin, destination, date, storePassengers]);
 
   const handleSearchFlight = () => {
     // Validate
@@ -70,6 +85,9 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
     });
 
     router.push(`/flights?${params.toString()}`);
+    if (onSearchComplete) {
+      onSearchComplete();
+    }
   };
 
   return (

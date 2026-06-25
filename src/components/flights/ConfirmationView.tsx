@@ -6,12 +6,13 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useFlightSearchStore } from "@/store/flightSearchStore";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { RiArrowLeftLine } from "react-icons/ri";
 import { FlightSummary } from "./FlightSummary";
 
 export function ConfirmationView() {
   const router = useRouter();
+  const toastShown = useRef(false);
   const {
     selectedFlight,
     bookingDetails,
@@ -23,7 +24,10 @@ export function ConfirmationView() {
   } = useFlightSearchStore();
 
   useEffect(() => {
-    toast.success("Booking confirmed successfully!");
+    if (!toastShown.current) {
+      toast.success("Booking confirmed successfully!");
+      toastShown.current = true;
+    }
   }, []);
 
   if (!selectedFlight || !bookingDetails) return null;
