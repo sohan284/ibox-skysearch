@@ -36,11 +36,6 @@ const getTodayString = (): string => {
   return today.toISOString().split("T")[0];
 };
 
-const isDateInPast = (dateStr: string): boolean => {
-  const todayStr = getTodayString();
-  return dateStr < todayStr;
-};
-
 const getDefaultState = (): Omit<
   FlightSearchState,
   | "setOrigin"
@@ -99,15 +94,14 @@ export const useFlightSearchStore = create<FlightSearchState>()(
     {
       name: "flight-search-storage",
       storage: createJSONStorage(() => sessionStorage),
-      // Validate persisted date on rehydration — reset to today if stale
-      merge: (persistedState, currentState) => {
-        const persisted = persistedState as Partial<FlightSearchState>;
-        const date =
-          persisted.date && !isDateInPast(persisted.date)
-            ? persisted.date
-            : getTodayString();
-        return { ...currentState, ...persisted, date };
-      },
+      partialize: (state) => ({
+        origin: state.origin,
+        destination: state.destination,
+        date: state.date,
+        passengers: state.passengers,
+        filters: state.filters,
+        sort: state.sort,
+      }),
     },
   ),
 );

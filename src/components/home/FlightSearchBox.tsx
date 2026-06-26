@@ -11,6 +11,17 @@ import { useFlightSearchStore } from "@/store/flightSearchStore";
 import { toast } from "sonner";
 import { CustomButton } from "../ui/CustomButton";
 
+const parseLocalDate = (dateStr: string): Date => {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const isDatePast = (dateStr: string): boolean => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return parseLocalDate(dateStr) < today;
+};
+
 interface FlightSearchBoxProps {
   isModify?: boolean;
   onSearchComplete?: () => void;
@@ -39,11 +50,12 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
     }
     return BANGLADESH_AIRPORTS.find((airport) => airport.code === "CXB") || null;
   });
-  const [departureDate, setDepartureDate] = useState<Date | null>(() => {
-    if (!date) return new Date();
-    const [year, month, day] = date.split("-").map(Number);
-    return new Date(year, month - 1, day); // local time parse (no UTC offset shift)
-  });
+  const [departureDate, setDepartureDate] = useState<Date | null>(new Date());
+
+  useEffect(() => {
+    if (!date) return;
+    setDepartureDate(isDatePast(date) ? new Date() : parseLocalDate(date));
+  }, [date]);
 
   const handleSearchFlight = () => {
     // Validate
