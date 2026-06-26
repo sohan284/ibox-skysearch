@@ -39,9 +39,11 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
     }
     return BANGLADESH_AIRPORTS.find((airport) => airport.code === "CXB") || null;
   });
-  const [departureDate, setDepartureDate] = useState<Date | null>(() =>
-    date ? new Date(date) : new Date()
-  );
+  const [departureDate, setDepartureDate] = useState<Date | null>(() => {
+    if (!date) return new Date();
+    const [year, month, day] = date.split("-").map(Number);
+    return new Date(year, month - 1, day); // local time parse (no UTC offset shift)
+  });
 
   const handleSearchFlight = () => {
     // Validate

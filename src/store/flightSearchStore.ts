@@ -30,6 +30,17 @@ interface FlightSearchState {
 }
 
 // Default values
+const getTodayString = (): string => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return today.toISOString().split("T")[0];
+};
+
+const isDateInPast = (dateStr: string): boolean => {
+  const todayStr = getTodayString();
+  return dateStr < todayStr;
+};
+
 const getDefaultState = (): Omit<
   FlightSearchState,
   | "setOrigin"
@@ -42,27 +53,23 @@ const getDefaultState = (): Omit<
   | "setBookingDetails"
   | "resetSearch"
   | "resetAll"
-> => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return {
-    origin: "",
-    destination: "",
-    date: today.toISOString().split("T")[0],
-    passengers: 1,
-    filters: {
-      airlines: [],
-      stops: [],
-      minPrice: 0,
-      maxPrice: APP_CONSTANTS.MAX_PRICE_DEFAULT,
-      classTypes: [],
-      refundableOnly: false,
-    },
-    sort: "price-asc",
-    selectedFlight: null,
-    bookingDetails: null,
-  };
-};
+> => ({
+  origin: "",
+  destination: "",
+  date: getTodayString(),
+  passengers: 1,
+  filters: {
+    airlines: [],
+    stops: [],
+    minPrice: 0,
+    maxPrice: APP_CONSTANTS.MAX_PRICE_DEFAULT,
+    classTypes: [],
+    refundableOnly: false,
+  },
+  sort: "price-asc",
+  selectedFlight: null,
+  bookingDetails: null,
+});
 
 export const useFlightSearchStore = create<FlightSearchState>()(
   persist(
@@ -80,21 +87,27 @@ export const useFlightSearchStore = create<FlightSearchState>()(
       setSort: (sort) => set({ sort }),
       setSelectedFlight: (flight) => set({ selectedFlight: flight }),
       setBookingDetails: (details) => set({ bookingDetails: details }),
-      resetSearch: () => {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+      resetSearch: () =>
         set({
           origin: "",
           destination: "",
-          date: today.toISOString().split("T")[0],
+          date: getTodayString(),
           passengers: 1,
-        });
-      },
+        }),
       resetAll: () => set(getDefaultState()),
     }),
     {
-      name: "flight-search-storage", // Name of the sessionStorage key
+      name: "flight-search-storage",
       storage: createJSONStorage(() => sessionStorage),
+      // Validate persisted date on rehydration — reset to today if stale
+      merge: (persistedState, currentState) => {
+        const persisted = persistedState as Partial<FlightSearchState>;
+        const date =
+          persisted.date && !isDateInPast(persisted.date)
+            ? persisted.date
+            : getTodayString();
+        return { ...currentState, ...persisted, date };
+      },
     },
   ),
 );
