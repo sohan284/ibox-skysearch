@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useEffect, useRef } from "react";
 import { RiArrowLeftLine } from "react-icons/ri";
-import { FlightSummary } from "./FlightSummary";
+import { FlightSummary } from "../FlightSummary";
 
 export function ConfirmationView() {
   const router = useRouter();
@@ -50,7 +50,7 @@ export function ConfirmationView() {
         <RiArrowLeftLine size={18} />
         <span className="text-sm">Back to Result</span>
       </button>
-      <Card className="max-w-3xl mx-auto transition-all duration-300 border-2 border-gray-100">
+      <Card className=" mx-auto transition-all duration-300 border-2 border-gray-100">
         <CardContent className="p-8 ">
           <div className="w-14 h-14 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <div className="text-primary text-4xl">✓</div>

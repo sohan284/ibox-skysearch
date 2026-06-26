@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/drawer";
 import { IoClose } from "react-icons/io5";
 import { FlightCard } from "./FlightCard";
+import { FlightCardSkeleton } from "./FlightCardSkeleton";
 import { FlightFilters } from "./FlightFilters";
 import { useFlightSearchStore } from "@/store/flightSearchStore";
 import { useRouter } from "next/navigation";
@@ -113,16 +114,8 @@ export function ResultsView() {
             </Card>
           ) : isLoading ? (
             <div className="space-y-4">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <Card key={i} className="border-2 border-gray-100">
-                  <CardContent className="p-6">
-                    <div className="flex flex-col md:flex-row gap-4">
-                      <Skeleton className="h-6 w-40" />
-                      <Skeleton className="h-6 w-32" />
-                      <Skeleton className="h-10 w-40 ml-auto" />
-                    </div>
-                  </CardContent>
-                </Card>
+              {Array.from({ length: 4 }).map((_, i) => (
+                <FlightCardSkeleton key={i} />
               ))}
             </div>
           ) : filteredFlights.length === 0 ? (

@@ -8,8 +8,8 @@ export interface GetFlightsParams {
 }
 
 export async function getFlights(params?: GetFlightsParams): Promise<Flight[]> {
-  // In real app, this would be a fetch call to your backend API
-  // await new Promise(resolve => setTimeout(resolve, 300));
+  // Simulate network request delay
+  await new Promise(resolve => setTimeout(resolve, 800));
   let flights = MOCK_FLIGHTS;
   
   if (params?.origin) {
@@ -26,7 +26,7 @@ export async function getFlights(params?: GetFlightsParams): Promise<Flight[]> {
 }
 
 export async function getFlightById(id: string): Promise<Flight | null> {
-  // In real app, this would be a fetch call to your backend API
-  // await new Promise(resolve => setTimeout(resolve, 300));
+  // Simulate network request delay
+  await new Promise(resolve => setTimeout(resolve, 800));
   return MOCK_FLIGHTS.find(flight => flight.id === id) || null;
 }

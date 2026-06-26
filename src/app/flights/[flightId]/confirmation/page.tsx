@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useFlightSearchStore } from "@/store/flightSearchStore";
 import { getFlightById } from "@/lib/api/flights";
-import { ConfirmationView } from "@/components/flights/ConfirmationView";
-import { ConfirmationViewSkeleton } from "@/components/flights/ConfirmationViewSkeleton";
+import { ConfirmationView } from "@/components/flights/confirmation/ConfirmationView";
+import { ConfirmationViewSkeleton } from "@/components/flights/confirmation/ConfirmationViewSkeleton";
 
 export default function ConfirmationPage() {
   const params = useParams<{ flightId: string }>();

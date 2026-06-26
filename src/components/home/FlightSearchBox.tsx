@@ -26,34 +26,22 @@ const FlightSearchBox: React.FC<FlightSearchBoxProps> = ({
   const { origin, destination, date, passengers: storePassengers, setOrigin, setDestination, setDate, setPassengers, resetAll } =
     useFlightSearchStore();
 
-  const [passengers, setPassengersCount] = useState(1);
-  const [fromAirport, setFromAirport] = useState<Airport | null>(
-    BANGLADESH_AIRPORTS.find((airport) => airport.code === "DAC") || null,
-  );
-  const [toAirport, setToAirport] = useState<Airport | null>(
-    BANGLADESH_AIRPORTS.find((airport) => airport.code === "CXB") || null,
-  );
-  const [departureDate, setDepartureDate] = useState<Date | null>(new Date());
-
-  // Sync local state with store on mount if isModify is true
-  useEffect(() => {
-    if (isModify) {
-      if (origin) {
-        const airport = BANGLADESH_AIRPORTS.find((a) => a.code === origin);
-        if (airport) setFromAirport(airport);
-      }
-      if (destination) {
-        const airport = BANGLADESH_AIRPORTS.find((a) => a.code === destination);
-        if (airport) setToAirport(airport);
-      }
-      if (date) {
-        setDepartureDate(new Date(date));
-      }
-      if (storePassengers) {
-        setPassengersCount(storePassengers);
-      }
+  const [passengers, setPassengersCount] = useState(() => storePassengers || 1);
+  const [fromAirport, setFromAirport] = useState<Airport | null>(() => {
+    if (origin) {
+      return BANGLADESH_AIRPORTS.find((a) => a.code === origin) || null;
     }
-  }, [isModify, origin, destination, date, storePassengers]);
+    return BANGLADESH_AIRPORTS.find((airport) => airport.code === "DAC") || null;
+  });
+  const [toAirport, setToAirport] = useState<Airport | null>(() => {
+    if (destination) {
+      return BANGLADESH_AIRPORTS.find((a) => a.code === destination) || null;
+    }
+    return BANGLADESH_AIRPORTS.find((airport) => airport.code === "CXB") || null;
+  });
+  const [departureDate, setDepartureDate] = useState<Date | null>(() =>
+    date ? new Date(date) : new Date()
+  );
 
   const handleSearchFlight = () => {
     // Validate

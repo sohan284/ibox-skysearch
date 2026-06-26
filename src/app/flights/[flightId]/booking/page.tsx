@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useFlightSearchStore } from "@/store/flightSearchStore";
 import { getFlightById } from "@/lib/api/flights";
-import { BookingForm } from "@/components/flights/BookingForm";
-import { BookingFormSkeleton } from "@/components/flights/BookingFormSkeleton";
+import { BookingForm } from "@/components/flights/booking/BookingForm";
+import { BookingFormSkeleton } from "@/components/flights/booking/BookingFormSkeleton";
 
 export default function BookingPage() {
   const params = useParams<{ flightId: string }>();

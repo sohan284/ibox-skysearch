@@ -11,7 +11,7 @@ import { Form, FormField } from "@/components/ui/form";
 import { useFlightSearchStore } from "@/store/flightSearchStore";
 import { Passenger } from "@/lib/types";
 import { useRouter } from "next/navigation";
-import { FlightSummary } from "./FlightSummary";
+import { FlightSummary } from "../FlightSummary";
 import { RiArrowLeftLine } from "react-icons/ri";
 
 const bookingFormSchema = z.object({
@@ -83,7 +83,7 @@ export function BookingForm() {
         <RiArrowLeftLine size={18} />
         <span className="text-sm">Back to Result</span>
       </button>
-      <Card className="max-w-3xl mx-auto transition-all duration-300 border-2 border-gray-100 hover:border-primary/30">
+      <Card className=" mx-auto transition-all duration-300 border-2 border-gray-100 hover:border-primary/30">
         <CardHeader>
           <CardTitle className="text-2xl">Complete Your Booking</CardTitle>
         </CardHeader>
